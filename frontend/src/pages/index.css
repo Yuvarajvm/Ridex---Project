@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+
+  color: #171717;
+  background: #f7f7f5;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --ridex-bg: #f7f7f5;
+  --ridex-surface: #ffffff;
+  --ridex-surface-muted: #f0f0ed;
+
+  --ridex-text: #171717;
+  --ridex-text-muted: #6b6b67;
+
+  --ridex-border: #deded8;
+
+  --ridex-primary: #f97316;
+  --ridex-primary-hover: #ea580c;
+  --ridex-primary-soft: #fff1e8;
+
+  --ridex-radius-sm: 8px;
+  --ridex-radius-md: 12px;
+  --ridex-radius-lg: 18px;
+  --ridex-radius-xl: 24px;
+
+  --ridex-container: 1180px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--ridex-bg);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--ridex-bg);
+  color: var(--ridex-text);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}

@@ -15,6 +15,7 @@ from app.core.database import check_database_connection, close_database_connecti
 from app.core.exceptions import register_exception_handlers
 from app.core.logging import configure_logging, request_id_context
 from app.modules.api.v1.router import api_router
+from app.shared import models as _models
 
 settings = get_settings()
 logger = logging.getLogger(__name__)

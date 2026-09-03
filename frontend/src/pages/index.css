@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* =========================================================
+   RIDEX — GLOBAL FOUNDATION
+   ========================================================= */
 
 :root {
   font-family:
@@ -10,50 +12,39 @@
     "Segoe UI",
     sans-serif;
 
-  color: #171717;
-  background: #f7f7f5;
+  color: #172033;
+  background: #f5f2ea;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  --ridex-bg: #f7f7f5;
-  --ridex-surface: #ffffff;
-  --ridex-surface-muted: #f0f0ed;
-
-  --ridex-text: #171717;
-  --ridex-text-muted: #6b6b67;
-
-  --ridex-border: #deded8;
-
-  --ridex-primary: #f97316;
-  --ridex-primary-hover: #ea580c;
-  --ridex-primary-soft: #fff1e8;
-
-  --ridex-radius-sm: 8px;
-  --ridex-radius-md: 12px;
-  --ridex-radius-lg: 18px;
-  --ridex-radius-xl: 24px;
-
-  --ridex-container: 1180px;
-}
-
-* {
-  box-sizing: border-box;
 }
 
 html {
+  scroll-behavior: smooth;
+}
+
+html,
+body,
+#root {
+  width: 100%;
   min-width: 320px;
   min-height: 100%;
-  background: var(--ridex-bg);
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
   min-height: 100vh;
-  background: var(--ridex-bg);
-  color: var(--ridex-text);
+  background: #f5f2ea;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 button,
@@ -63,19 +54,2081 @@ select {
   font: inherit;
 }
 
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
-}
-
 button {
-  cursor: pointer;
+  border: 0;
 }
 
 a {
   color: inherit;
+  text-decoration: none;
 }
 
-#root {
+
+/* =========================================================
+   RIDEX HOME
+   ========================================================= */
+
+.ridex-home-page {
+  --ridex-ink: #172033;
+  --ridex-ink-soft: #526075;
+  --ridex-cream: #f5f2ea;
+  --ridex-paper: #fbfaf7;
+
+  --ridex-indigo: #26345f;
+  --ridex-indigo-dark: #1c2748;
+
+  --ridex-mint: #a9dfc6;
+  --ridex-mint-dark: #5ba982;
+
+  --ridex-coral: #e98570;
+
+  --ridex-line: rgba(23, 32, 51, 0.12);
+
   min-height: 100vh;
+
+  overflow-x: hidden;
+
+  background:
+    var(--ridex-cream);
+
+  color:
+    var(--ridex-ink);
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.ridex-hero {
+  position: relative;
+
+  min-height: 760px;
+
+  overflow: visible;
+
+  background:
+    radial-gradient(
+      circle at 82% 16%,
+      rgba(169, 223, 198, 0.34),
+      transparent 26%
+    ),
+    linear-gradient(
+      135deg,
+      #26345f 0%,
+      #202d54 55%,
+      #1c2748 100%
+    );
+
+  color: #fff;
+}
+
+.ridex-hero-grid {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  opacity: 0.12;
+
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.25) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.25) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    72px 72px;
+
+  mask-image:
+    linear-gradient(
+      to bottom,
+      black,
+      transparent 85%
+    );
+}
+
+.ridex-hero-inner {
+  position: relative;
+
+  z-index: 2;
+
+  width:
+    min(
+      1180px,
+      calc(100% - 48px)
+    );
+
+  margin:
+    0 auto;
+
+  padding:
+    118px 0 100px;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(420px, 520px);
+
+  gap: 72px;
+
+  align-items: center;
+}
+
+.ridex-hero-copy {
+  max-width: 600px;
+}
+
+.ridex-kicker {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color:
+    rgba(255, 255, 255, 0.72);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+
+  text-transform:
+    uppercase;
+}
+
+.ridex-kicker-dot {
+  width: 7px;
+  height: 7px;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+
+  background:
+    var(--ridex-mint);
+
+  box-shadow:
+    0 0 0 5px
+      rgba(169, 223, 198, 0.12);
+}
+
+.ridex-hero-copy h1 {
+  margin:
+    25px 0 22px;
+
+  font-size:
+    clamp(56px, 7vw, 88px);
+
+  line-height:
+    0.94;
+
+  letter-spacing:
+    -0.055em;
+
+  font-weight:
+    650;
+}
+
+.ridex-hero-copy h1 em {
+  color:
+    var(--ridex-mint);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-weight:
+    400;
+}
+
+.ridex-hero-description {
+  max-width: 480px;
+
+  margin: 0;
+
+  color:
+    rgba(255, 255, 255, 0.7);
+
+  font-size: 17px;
+
+  line-height: 1.7;
+}
+
+.ridex-hero-links {
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 18px;
+
+  margin-top: 38px;
+
+  color:
+    rgba(255, 255, 255, 0.68);
+
+  font-size: 13px;
+}
+
+.ridex-hero-links a {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  color: #fff;
+
+  font-weight: 650;
+}
+
+.ridex-hero-links a svg {
+  transition:
+    transform 180ms ease;
+}
+
+.ridex-hero-links a:hover svg {
+  transform:
+    translateX(4px);
+}
+
+.ridex-hero-divider {
+  width: 1px;
+  height: 18px;
+
+  background:
+    rgba(255, 255, 255, 0.22);
+}
+
+
+/* =========================================================
+   SEARCH CARD
+   ========================================================= */
+
+.ridex-search-card {
+  position: relative;
+
+  z-index: 10;
+
+  overflow: visible;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.18);
+
+  border-radius: 28px;
+
+  padding: 30px;
+
+  background:
+    rgba(251, 250, 247, 0.98);
+
+  color:
+    var(--ridex-ink);
+
+  box-shadow:
+    0 28px 80px
+      rgba(10, 17, 36, 0.26),
+    0 4px 18px
+      rgba(10, 17, 36, 0.12);
+}
+
+.ridex-search-card-top {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-bottom: 25px;
+}
+
+.ridex-search-label {
+  color:
+    var(--ridex-coral);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+
+  text-transform:
+    uppercase;
+}
+
+.ridex-search-card h2 {
+  margin:
+    9px 0 0;
+
+  font-size: 27px;
+
+  line-height: 1.1;
+
+  letter-spacing:
+    -0.035em;
+}
+
+.ridex-live-status {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    8px 11px;
+
+  border-radius: 999px;
+
+  background:
+    #eef7f1;
+
+  color:
+    #4e765f;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.ridex-live-status span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background:
+    var(--ridex-mint-dark);
+}
+
+
+/* =========================================================
+   ROUTE FORM
+   ========================================================= */
+
+.ridex-search-form {
+  position: relative;
+
+  overflow: visible;
+}
+
+.ridex-route-fields {
+  position: relative;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 42px 1fr;
+
+  gap: 10px;
+
+  align-items: end;
+}
+
+.ridex-field-wrapper,
+.ridex-date-field {
+  position: relative;
+
+  overflow: visible;
+}
+
+.ridex-field-wrapper label,
+.ridex-date-field label {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color:
+    #778093;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.16em;
+}
+
+.ridex-input {
+  position: relative;
+
+  min-height: 58px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  border:
+    1px solid #dfe2e7;
+
+  border-radius: 15px;
+
+  padding:
+    0 15px;
+
+  background:
+    #fff;
+
+  color:
+    #718096;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.ridex-input.is-active,
+.ridex-input:focus-within {
+  border-color:
+    var(--ridex-indigo);
+
+  box-shadow:
+    0 0 0 3px
+      rgba(38, 52, 95, 0.08);
+}
+
+.ridex-input input {
+  width: 100%;
+
+  min-width: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  background:
+    transparent;
+
+  color:
+    var(--ridex-ink);
+
+  font-size: 14px;
+}
+
+.ridex-input input::placeholder {
+  color:
+    #9ba2af;
+}
+
+
+/* =========================================================
+   LOCATION SUGGESTIONS
+   ========================================================= */
+
+.ridex-suggestions {
+  position: absolute;
+
+  z-index: 2000;
+
+  top:
+    calc(100% + 7px);
+
+  left: 0;
+  right: 0;
+
+  overflow: hidden;
+
+  border:
+    1px solid #e1e4e8;
+
+  border-radius: 15px;
+
+  background:
+    #fff;
+
+  box-shadow:
+    0 18px 40px
+      rgba(20, 27, 44, 0.14);
+}
+
+.ridex-suggestions button {
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  padding:
+    13px 15px;
+
+  border: 0;
+
+  border-bottom:
+    1px solid #eef0f2;
+
+  background:
+    #fff;
+
+  color:
+    var(--ridex-ink);
+
+  text-align:
+    left;
+
+  cursor: pointer;
+
+  transition:
+    background 120ms ease;
+}
+
+.ridex-suggestions button:last-child {
+  border-bottom: 0;
+}
+
+.ridex-suggestions button:hover {
+  background:
+    #f4f7f5;
+}
+
+.ridex-suggestions svg {
+  flex: 0 0 auto;
+
+  color:
+    var(--ridex-mint-dark);
+}
+
+.ridex-suggestions span {
+  overflow: hidden;
+
+  font-size: 13px;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   SWAP
+   ========================================================= */
+
+.ridex-swap {
+  width: 42px;
+  height: 42px;
+
+  margin-bottom: 8px;
+
+  display: grid;
+
+  place-items: center;
+
+  border:
+    1px solid #dfe2e7;
+
+  border-radius: 50%;
+
+  background:
+    #fff;
+
+  color:
+    var(--ridex-indigo);
+
+  cursor: pointer;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+}
+
+.ridex-swap:hover:not(:disabled) {
+  transform:
+    rotate(180deg);
+
+  background:
+    var(--ridex-indigo);
+
+  color:
+    #fff;
+}
+
+.ridex-swap:disabled {
+  opacity: 0.4;
+
+  cursor:
+    not-allowed;
+}
+
+
+/* =========================================================
+   DATE FIELD
+   ========================================================= */
+
+.ridex-search-bottom {
+  position: relative;
+
+  z-index: 20;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1.05fr;
+
+  gap: 12px;
+
+  margin-top: 19px;
+
+  overflow: visible;
+}
+
+.ridex-date-trigger {
+  width: 100%;
+
+  min-height: 58px;
+
+  justify-content:
+    flex-start;
+
+  border:
+    1px solid #dfe2e7;
+
+  outline: none;
+
+  text-align:
+    left;
+
+  cursor:
+    pointer;
+}
+
+.ridex-date-trigger:hover:not(:disabled) {
+  border-color:
+    #bfc6d3;
+}
+
+.ridex-date-trigger.is-active {
+  border-color:
+    var(--ridex-indigo);
+
+  box-shadow:
+    0 0 0 3px
+      rgba(38, 52, 95, 0.08);
+}
+
+.ridex-date-trigger.is-placeholder {
+  color:
+    #9ba2af;
+}
+
+.ridex-date-trigger:disabled {
+  opacity: 0.45;
+
+  cursor:
+    not-allowed;
+}
+
+
+/* =========================================================
+   RIDEX CUSTOM CALENDAR
+   ========================================================= */
+
+.ridex-calendar {
+  position: absolute;
+
+  z-index: 5000;
+
+  /*
+   * Calendar opens directly BELOW
+   * the date field.
+   */
+  top:
+    calc(100% + 12px);
+
+  bottom: auto;
+
+  left: 0;
+
+  width: 365px;
+
+  padding: 22px;
+
+  border:
+    1px solid
+    rgba(23, 32, 51, 0.09);
+
+  border-radius: 22px;
+
+  background:
+    #fff;
+
+  color:
+    var(--ridex-ink);
+
+  box-shadow:
+    0 26px 70px
+      rgba(20, 27, 44, 0.18),
+    0 5px 18px
+      rgba(20, 27, 44, 0.08);
+
+  animation:
+    ridex-calendar-open
+    160ms ease-out;
+}
+
+@keyframes ridex-calendar-open {
+  from {
+    opacity: 0;
+
+    transform:
+      translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+
+    transform:
+      translateY(0);
+  }
+}
+
+
+/* =========================================================
+   CALENDAR CLOSE
+   ========================================================= */
+
+.calendar-close-button {
+  position: absolute;
+
+  top: 11px;
+  right: 11px;
+
+  width: 29px;
+  height: 29px;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background:
+    transparent;
+
+  color:
+    #8a93a1;
+
+  font-size: 21px;
+
+  font-weight: 400;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 140ms ease,
+    color 140ms ease;
+}
+
+.calendar-close-button:hover {
+  background:
+    #f1f3f6;
+
+  color:
+    #172033;
+}
+
+.calendar-close-button:focus-visible {
+  outline:
+    2px solid
+    var(--ridex-indigo);
+
+  outline-offset:
+    2px;
+}
+
+
+/* =========================================================
+   CALENDAR HEADER
+   ========================================================= */
+
+.calendar-header,
+.ridex-calendar-header {
+  display: grid;
+
+  grid-template-columns:
+    38px 1fr 38px;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding-right: 30px;
+
+  margin-bottom: 16px;
+}
+
+.calendar-header strong,
+.ridex-calendar-header strong {
+  color:
+    var(--ridex-ink);
+
+  font-size: 16px;
+
+  font-weight: 750;
+
+  letter-spacing:
+    -0.025em;
+
+  text-align:
+    center;
+}
+
+.calendar-nav-button,
+.ridex-calendar-nav {
+  width: 36px;
+  height: 36px;
+
+  display: grid;
+
+  place-items: center;
+
+  padding: 0;
+
+  border:
+    1px solid #e4e7eb;
+
+  border-radius: 10px;
+
+  background:
+    #fafbf9;
+
+  color:
+    var(--ridex-indigo);
+
+  font-size: 21px;
+
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.calendar-nav-button:hover,
+.ridex-calendar-nav:hover {
+  background:
+    var(--ridex-indigo);
+
+  color:
+    #fff;
+}
+
+.calendar-nav-button:active,
+.ridex-calendar-nav:active {
+  transform:
+    scale(0.95);
+}
+
+
+/* =========================================================
+   CALENDAR ROUTE
+   ========================================================= */
+
+.calendar-route,
+.ridex-calendar-route {
+  min-height: 38px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 9px;
+
+  margin-bottom: 17px;
+
+  padding:
+    0 12px;
+
+  border-radius: 11px;
+
+  background:
+    #f0f6f2;
+
+  color:
+    #6c786f;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.calendar-route span:first-child,
+.calendar-route span:last-child,
+.ridex-calendar-route span:first-child,
+.ridex-calendar-route span:last-child {
+  max-width: 115px;
+
+  overflow: hidden;
+
+  color:
+    var(--ridex-indigo);
+
+  text-overflow:
+    ellipsis;
+
+  white-space:
+    nowrap;
+}
+
+.calendar-route span:nth-child(2),
+.ridex-calendar-route span:nth-child(2) {
+  color:
+    #70ad8b;
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   WEEKDAYS
+   ========================================================= */
+
+.calendar-weekdays,
+.ridex-calendar-weekdays {
+  display: grid;
+
+  grid-template-columns:
+    repeat(7, 1fr);
+
+  margin-bottom: 5px;
+}
+
+.calendar-weekdays span,
+.ridex-calendar-weekdays span {
+  height: 30px;
+
+  display: grid;
+
+  place-items: center;
+
+  color:
+    #929aa7;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.02em;
+}
+
+
+/* =========================================================
+   DATE GRID
+   ========================================================= */
+
+.calendar-grid,
+.ridex-calendar-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(7, 1fr);
+
+  row-gap: 3px;
+}
+
+.ridex-calendar-day {
+  position: relative;
+
+  width: 100%;
+
+  height: 42px;
+
+  display: grid;
+
+  place-items: center;
+
+  border: 0;
+
+  border-radius: 11px;
+
+  background:
+    transparent;
+
+  color:
+    #aeb4bd;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  cursor:
+    not-allowed;
+
+  transition:
+    background 130ms ease,
+    color 130ms ease,
+    transform 130ms ease;
+}
+
+.ridex-calendar-day-empty {
+  pointer-events:
+    none;
+}
+
+.ridex-calendar-day-past {
+  color:
+    #d8dbe0;
+}
+
+.ridex-calendar-day-available {
+  color:
+    var(--ridex-indigo);
+
+  cursor:
+    pointer;
+}
+
+.ridex-calendar-day-available:hover {
+  background:
+    #edf7f1;
+
+  color:
+    #1c6c47;
+
+  transform:
+    translateY(-1px);
+}
+
+.ridex-calendar-day-selected {
+  background:
+    var(--ridex-indigo) !important;
+
+  color:
+    #fff !important;
+
+  box-shadow:
+    0 5px 12px
+      rgba(38, 52, 95, 0.18);
+}
+
+.ridex-calendar-availability-dot {
+  position: absolute;
+
+  left: 50%;
+
+  bottom: 5px;
+
+  width: 5px;
+  height: 5px;
+
+  transform:
+    translateX(-50%);
+
+  border-radius: 50%;
+
+  background:
+    #65b88d;
+}
+
+.ridex-calendar-day-selected
+  .ridex-calendar-availability-dot {
+  background:
+    var(--ridex-mint);
+}
+
+
+/* =========================================================
+   CALENDAR LOADING
+   ========================================================= */
+
+.ridex-calendar-loading {
+  grid-column:
+    1 / -1;
+
+  min-height: 285px;
+
+  display: grid;
+
+  place-items: center;
+
+  color:
+    #7c8694;
+
+  font-size: 11px;
+
+  text-align:
+    center;
+}
+
+
+/* =========================================================
+   CALENDAR FOOTER
+   ========================================================= */
+
+.calendar-footer,
+.ridex-calendar-footer {
+  min-height: 34px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  margin-top: 12px;
+
+  padding-top: 12px;
+
+  border-top:
+    1px solid #edf0f2;
+
+  color:
+    #8a929e;
+
+  font-size: 10px;
+
+  text-align: center;
+}
+
+.calendar-legend,
+.ridex-calendar-legend {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+.calendar-legend-dot,
+.ridex-calendar-legend-dot {
+  width: 6px;
+  height: 6px;
+
+  flex: 0 0 auto;
+
+  border-radius: 50%;
+
+  background:
+    #65b88d;
+}
+
+
+/* =========================================================
+   SEARCH BUTTON
+   ========================================================= */
+
+.ridex-search-button {
+  min-height: 58px;
+
+  align-self: end;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 11px;
+
+  border: 0;
+
+  border-radius: 15px;
+
+  background:
+    var(--ridex-coral);
+
+  color:
+    #fff;
+
+  font-size: 14px;
+
+  font-weight: 750;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 9px 20px
+      rgba(233, 133, 112, 0.2);
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.ridex-search-button:hover:not(:disabled) {
+  transform:
+    translateY(-2px);
+
+  background:
+    #dc755f;
+
+  box-shadow:
+    0 13px 26px
+      rgba(233, 133, 112, 0.26);
+}
+
+.ridex-search-button:active:not(:disabled) {
+  transform:
+    translateY(0);
+}
+
+.ridex-search-button:disabled {
+  opacity: 0.55;
+
+  cursor:
+    not-allowed;
+
+  box-shadow:
+    none;
+}
+
+.ridex-search-error {
+  margin-top: 12px;
+
+  padding:
+    10px 13px;
+
+  border-radius: 10px;
+
+  background:
+    #fff0ed;
+
+  color:
+    #b84f3d;
+
+  font-size: 12px;
+
+  line-height: 1.45;
+}
+
+
+/* =========================================================
+   HERO FOOTER
+   ========================================================= */
+
+.ridex-hero-bottom {
+  position: absolute;
+
+  z-index: 2;
+
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  width:
+    min(
+      1180px,
+      calc(100% - 48px)
+    );
+
+  margin:
+    0 auto;
+
+  padding:
+    18px 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  border-top:
+    1px solid
+    rgba(255, 255, 255, 0.14);
+
+  color:
+    rgba(255, 255, 255, 0.4);
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+}
+
+
+/* =========================================================
+   HOW IT WORKS
+   ========================================================= */
+
+.ridex-how-section {
+  padding:
+    125px 0;
+
+  background:
+    var(--ridex-paper);
+}
+
+.ridex-section-inner {
+  width:
+    min(
+      1180px,
+      calc(100% - 48px)
+    );
+
+  margin:
+    0 auto;
+}
+
+.ridex-section-heading {
+  display: grid;
+
+  grid-template-columns:
+    1fr 340px;
+
+  gap: 80px;
+
+  align-items: end;
+}
+
+.ridex-section-label {
+  color:
+    var(--ridex-coral);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.18em;
+
+  text-transform:
+    uppercase;
+}
+
+.ridex-section-heading h2,
+.ridex-trust-copy h2,
+.ridex-driver-section h2 {
+  margin:
+    18px 0 0;
+
+  font-size:
+    clamp(42px, 5vw, 64px);
+
+  line-height:
+    0.98;
+
+  letter-spacing:
+    -0.05em;
+
+  font-weight:
+    650;
+}
+
+.ridex-section-heading h2 em,
+.ridex-trust-copy h2 em,
+.ridex-driver-section h2 em {
+  color:
+    var(--ridex-indigo);
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-weight:
+    400;
+}
+
+.ridex-section-heading > p {
+  margin:
+    0 0 4px;
+
+  color:
+    var(--ridex-ink-soft);
+
+  font-size: 15px;
+
+  line-height: 1.7;
+}
+
+.ridex-feature-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 1px;
+
+  margin-top: 75px;
+
+  border:
+    1px solid
+    var(--ridex-line);
+
+  background:
+    var(--ridex-line);
+}
+
+.ridex-feature-card {
+  position: relative;
+
+  min-height: 310px;
+
+  padding: 32px;
+
+  background:
+    var(--ridex-paper);
+}
+
+.ridex-feature-number {
+  position: absolute;
+
+  top: 28px;
+  right: 30px;
+
+  color:
+    #a6acb7;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing:
+    0.12em;
+}
+
+.ridex-feature-icon {
+  width: 48px;
+  height: 48px;
+
+  margin-bottom: 70px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 14px;
+
+  background:
+    var(--ridex-mint);
+
+  color:
+    var(--ridex-indigo);
+}
+
+.ridex-feature-card:nth-child(2)
+  .ridex-feature-icon {
+  background:
+    #dfe4f4;
+}
+
+.ridex-feature-card:nth-child(3)
+  .ridex-feature-icon {
+  background:
+    #f8d8d0;
+}
+
+.ridex-feature-card h3 {
+  margin:
+    0 0 10px;
+
+  font-size: 20px;
+
+  letter-spacing:
+    -0.025em;
+}
+
+.ridex-feature-card p {
+  max-width: 280px;
+
+  margin: 0;
+
+  color:
+    var(--ridex-ink-soft);
+
+  font-size: 13px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   WHY RIDEX
+   ========================================================= */
+
+.ridex-trust-section {
+  padding:
+    120px 0;
+
+  background:
+    var(--ridex-cream);
+}
+
+.ridex-trust-inner {
+  width:
+    min(
+      1180px,
+      calc(100% - 48px)
+    );
+
+  margin:
+    0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    0.9fr 1fr;
+
+  gap: 120px;
+
+  align-items: start;
+}
+
+.ridex-trust-copy p {
+  max-width: 430px;
+
+  margin:
+    28px 0 0;
+
+  color:
+    var(--ridex-ink-soft);
+
+  font-size: 15px;
+
+  line-height: 1.75;
+}
+
+.ridex-trust-items {
+  border-top:
+    1px solid
+    var(--ridex-line);
+}
+
+.ridex-trust-item {
+  display: grid;
+
+  grid-template-columns:
+    52px 1fr;
+
+  gap: 22px;
+
+  padding:
+    27px 0;
+
+  border-bottom:
+    1px solid
+    var(--ridex-line);
+}
+
+.ridex-trust-icon {
+  width: 46px;
+  height: 46px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 13px;
+
+  background:
+    #fff;
+
+  color:
+    var(--ridex-indigo);
+}
+
+.ridex-trust-item h3 {
+  margin:
+    2px 0 7px;
+
+  font-size: 16px;
+
+  letter-spacing:
+    -0.02em;
+}
+
+.ridex-trust-item p {
+  max-width: 440px;
+
+  margin: 0;
+
+  color:
+    var(--ridex-ink-soft);
+
+  font-size: 13px;
+
+  line-height: 1.6;
+}
+
+
+/* =========================================================
+   DRIVER CTA
+   ========================================================= */
+
+.ridex-driver-section {
+  padding:
+    90px 0;
+
+  background:
+    var(--ridex-indigo);
+
+  color:
+    #fff;
+}
+
+.ridex-driver-inner {
+  width:
+    min(
+      1180px,
+      calc(100% - 48px)
+    );
+
+  margin:
+    0 auto;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 50px;
+}
+
+.ridex-driver-section
+  .ridex-section-label {
+  color:
+    var(--ridex-mint);
+}
+
+.ridex-driver-section h2 {
+  margin-top:
+    14px;
+}
+
+.ridex-driver-section h2 em {
+  color:
+    var(--ridex-mint);
+}
+
+.ridex-driver-button {
+  flex: 0 0 auto;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding:
+    16px 21px;
+
+  border-radius: 13px;
+
+  background:
+    var(--ridex-mint);
+
+  color:
+    var(--ridex-indigo);
+
+  font-size: 13px;
+
+  font-weight: 800;
+
+  transition:
+    transform 160ms ease,
+    background 160ms ease;
+}
+
+.ridex-driver-button:hover {
+  transform:
+    translateY(-2px);
+
+  background:
+    #c1ead6;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.ridex-home-footer {
+  width:
+    min(
+      1180px,
+      calc(100% - 48px)
+    );
+
+  min-height: 88px;
+
+  margin:
+    0 auto;
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr 1fr;
+
+  align-items: center;
+
+  gap: 20px;
+
+  background:
+    var(--ridex-paper);
+
+  color:
+    #737b89;
+
+  font-size: 11px;
+}
+
+.ridex-footer-brand {
+  color:
+    var(--ridex-indigo);
+
+  font-size: 17px;
+
+  font-weight: 900;
+
+  letter-spacing:
+    -0.04em;
+}
+
+.ridex-footer-center {
+  text-align:
+    center;
+}
+
+.ridex-footer-right {
+  text-align:
+    right;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media (max-width: 1050px) {
+  .ridex-hero-inner {
+    grid-template-columns:
+      1fr;
+
+    gap: 55px;
+
+    padding-top:
+      90px;
+  }
+
+  .ridex-hero-copy {
+    max-width: 720px;
+  }
+
+  .ridex-search-card {
+    width:
+      min(
+        620px,
+        100%
+      );
+  }
+
+  .ridex-hero {
+    min-height:
+      auto;
+  }
+
+  .ridex-hero-bottom {
+    position:
+      relative;
+
+    margin-top:
+      -1px;
+  }
+
+  .ridex-trust-inner {
+    gap:
+      70px;
+  }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 760px) {
+  .ridex-hero-inner,
+  .ridex-section-inner,
+  .ridex-trust-inner,
+  .ridex-driver-inner,
+  .ridex-hero-bottom,
+  .ridex-home-footer {
+    width:
+      min(
+        calc(100% - 32px),
+        620px
+      );
+  }
+
+  .ridex-hero-inner {
+    padding:
+      65px 0 55px;
+  }
+
+  .ridex-hero-copy h1 {
+    font-size:
+      clamp(
+        48px,
+        15vw,
+        68px
+      );
+  }
+
+  .ridex-hero-description {
+    font-size:
+      15px;
+  }
+
+  .ridex-hero-links {
+    flex-wrap:
+      wrap;
+  }
+
+  .ridex-search-card {
+    padding:
+      22px;
+
+    border-radius:
+      22px;
+  }
+
+  .ridex-search-card-top {
+    flex-direction:
+      column;
+  }
+
+  .ridex-route-fields {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      10px;
+  }
+
+  .ridex-swap {
+    position:
+      absolute;
+
+    z-index:
+      4;
+
+    right:
+      15px;
+
+    top:
+      48px;
+
+    margin:
+      0;
+  }
+
+  .ridex-search-bottom {
+    grid-template-columns:
+      1fr;
+  }
+
+  .ridex-search-button {
+    min-height:
+      56px;
+  }
+
+  /*
+   * On mobile the calendar is centered under
+   * the date field rather than being pushed
+   * off-screen.
+   */
+  .ridex-calendar {
+    left:
+      50%;
+
+    width:
+      min(
+        365px,
+        calc(100vw - 32px)
+      );
+
+    transform:
+      translateX(-50%);
+  }
+
+  @keyframes ridex-calendar-open {
+    from {
+      opacity: 0;
+
+      transform:
+        translate(
+          -50%,
+          -6px
+        );
+    }
+
+    to {
+      opacity: 1;
+
+      transform:
+        translate(
+          -50%,
+          0
+        );
+    }
+  }
+
+  .ridex-how-section,
+  .ridex-trust-section {
+    padding:
+      80px 0;
+  }
+
+  .ridex-section-heading {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      25px;
+  }
+
+  .ridex-feature-grid {
+    grid-template-columns:
+      1fr;
+
+    margin-top:
+      45px;
+  }
+
+  .ridex-feature-card {
+    min-height:
+      auto;
+
+    padding:
+      28px;
+  }
+
+  .ridex-feature-icon {
+    margin-bottom:
+      55px;
+  }
+
+  .ridex-trust-inner {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      55px;
+  }
+
+  .ridex-driver-inner {
+    align-items:
+      flex-start;
+
+    flex-direction:
+      column;
+  }
+
+  .ridex-driver-section {
+    padding:
+      75px 0;
+  }
+
+  .ridex-home-footer {
+    grid-template-columns:
+      1fr;
+
+    gap:
+      10px;
+
+    padding:
+      25px 0;
+  }
+
+  .ridex-footer-center,
+  .ridex-footer-right {
+    text-align:
+      left;
+  }
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .ridex-hero-inner,
+  .ridex-section-inner,
+  .ridex-trust-inner,
+  .ridex-driver-inner,
+  .ridex-hero-bottom,
+  .ridex-home-footer {
+    width:
+      calc(100% - 24px);
+  }
+
+  .ridex-hero-copy h1 {
+    font-size:
+      48px;
+  }
+
+  .ridex-search-card {
+    padding:
+      18px;
+  }
+
+  .ridex-search-card h2 {
+    font-size:
+      23px;
+  }
+
+  .ridex-live-status {
+    display:
+      none;
+  }
+
+  .ridex-hero-bottom {
+    padding:
+      14px 0;
+  }
+
+  .ridex-calendar {
+    width:
+      calc(100vw - 24px);
+
+    padding:
+      18px;
+  }
+
+  .ridex-calendar-day {
+    height:
+      40px;
+  }
 }

@@ -22,8 +22,10 @@ from app.shared.database import (
     TimestampMixin,
     UUIDPrimaryKeyMixin,
 )
+from app.modules.api.v1.rides.models import Ride
 
 if TYPE_CHECKING:
+    from app.modules.api.v1.rides.models import Ride
     from app.modules.api.v1.vehicles.models import Vehicle
 
 
@@ -154,7 +156,9 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     vehicles: Mapped[list[Vehicle]] = relationship(
         back_populates="owner",
     )
-
+    rides: Mapped[list["Ride"]] = relationship(
+        back_populates="driver",
+    )
 
 class Profile(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     """
@@ -266,3 +270,4 @@ class Profile(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     user: Mapped[User] = relationship(
         back_populates="profile",
     )
+    

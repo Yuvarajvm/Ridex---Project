@@ -295,11 +295,8 @@ function filterLocations(
 export function HomePage() {
   const navigate = useNavigate()
 
-  const todayKey =
-    getTodayKey()
-
-  const currentMonth =
-    getMonthStart(new Date())
+  const [todayKey, setTodayKey] =
+    useState(getTodayKey())
 
   const [origin, setOrigin] =
     useState('')
@@ -309,6 +306,32 @@ export function HomePage() {
 
   const [date, setDate] =
     useState('')
+
+  const currentMonth =
+    getMonthStart(new Date())
+
+  useEffect(() => {
+    const updateToday = () => {
+      const nextToday = getTodayKey()
+      setTodayKey(nextToday)
+      setDate((current) =>
+        current && current < nextToday
+          ? ''
+          : current,
+      )
+    }
+
+    updateToday()
+
+    const interval = window.setInterval(
+      updateToday,
+      60_000,
+    )
+
+    return () => {
+      window.clearInterval(interval)
+    }
+  }, [])
 
   const [
     activeLocationField,
@@ -354,6 +377,17 @@ export function HomePage() {
     setSearchError,
   ] = useState('')
 
+  const hasUpcomingAvailableRides =
+    useMemo(() => {
+      for (const item of availableDates) {
+        if (item >= todayKey) {
+          return true
+        }
+      }
+      return false
+    }, [availableDates, todayKey])
+
+
   const originSuggestions =
     useMemo(
       () =>
@@ -391,18 +425,11 @@ export function HomePage() {
       cleanOrigin.toLowerCase() ===
         cleanDestination.toLowerCase()
     ) {
-      setAvailableDates(
-        new Set(),
-      )
-
-      setAvailabilityLoading(
-        false,
-      )
-
-      setAvailabilityError(
-        false,
-      )
-
+      queueMicrotask(() => {
+        setAvailableDates(new Set())
+        setAvailabilityLoading(false)
+        setAvailabilityError(false)
+      })
       return
     }
 
@@ -781,9 +808,8 @@ export function HomePage() {
         key < todayKey
 
       const isAvailable =
-        availableDates.has(
-          key,
-        )
+        availableDates.has(key) &&
+        !isPast
 
       const isSelected =
         date === key
@@ -1232,8 +1258,7 @@ export function HomePage() {
 
                         {!availabilityLoading &&
                           !availabilityError &&
-                          availableDates.size >
-                            0 && (
+                          hasUpcomingAvailableRides && (
                             <span className="calendar-legend">
                               <span className="calendar-legend-dot" />
                               Rides available
@@ -1242,8 +1267,7 @@ export function HomePage() {
 
                         {!availabilityLoading &&
                           !availabilityError &&
-                          availableDates.size ===
-                            0 && (
+                          !hasUpcomingAvailableRides && (
                             <span>
                               No rides this month
                             </span>

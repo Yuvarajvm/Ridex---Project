@@ -1,11 +1,10 @@
-"""Pydantic schemas for the RIDEX ride API."""
+"""Pydantic schemas for the RIDEX ride marketplace."""
 
-from datetime import datetime
+from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
-from datetime import date
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class RideCreate(BaseModel):
@@ -16,28 +15,38 @@ class RideCreate(BaseModel):
     destination: str = Field(min_length=1, max_length=200)
     departure_at: datetime
     available_seats: int = Field(ge=1, le=8)
-    price_per_seat: Decimal = Field(ge=Decimal("10.00"), decimal_places=2)
+    price_per_seat: Decimal = Field(ge=Decimal("10.00"))
     notes: str | None = Field(default=None, max_length=2000)
 
-    @field_validator("origin", "destination")
-    @classmethod
-    def normalize_location(cls, value: str) -> str:
-        value = value.strip()
-        if not value:
-            raise ValueError("Location cannot be empty.")
-        return value
 
-    @field_validator("destination")
-    @classmethod
-    def validate_destination(
-        cls,
-        value: str,
-        info,
-    ) -> str:
-        origin = info.data.get("origin")
-        if origin and value.casefold() == origin.casefold():
-            raise ValueError("Origin and destination must be different.")
-        return value
+class RideStatusUpdate(BaseModel):
+    """Payload for updating ride status."""
+
+    status: str = Field(pattern="^(scheduled|in_progress|completed|cancelled)$")
+
+
+class DriverSummary(BaseModel):
+    """Driver summary embedded in public ride response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    full_name: str | None = None
+    avatar_url: str | None = None
+
+
+class VehicleSummary(BaseModel):
+    """Vehicle summary embedded in public ride response."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    vehicle_type: str
+    make: str
+    model: str
+    color: str | None = None
+    registration_number: str
+    seat_capacity: int
 
 
 class RideResponse(BaseModel):
@@ -57,6 +66,8 @@ class RideResponse(BaseModel):
     notes: str | None
     created_at: datetime
     updated_at: datetime
+    driver: DriverSummary | None = None
+    vehicle: VehicleSummary | None = None
 
 
 class RideListResponse(BaseModel):
@@ -66,13 +77,18 @@ class RideListResponse(BaseModel):
     total: int
     page: int
     page_size: int
-    
+
+
 class LocationSuggestion(BaseModel):
+    """Location autocomplete result."""
+
     name: str
 
 
 class RideAvailabilityResponse(BaseModel):
+    """Available ride dates for a route and calendar month."""
+
     origin: str
     destination: str
     month: str
-    available_dates: list[date]
+    dates: list[date]

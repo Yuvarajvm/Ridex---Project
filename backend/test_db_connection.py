@@ -1,24 +1,29 @@
-"""Temporary manual checkpoint for Python -> SQLAlchemy -> PostgreSQL."""
+"""Simple PostgreSQL connectivity check for RIDEX."""
 
 import asyncio
 
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import create_async_engine
 
-from app.core.config import get_settings
+from app.core.database import engine
 
 
-async def test_connection() -> None:
-    settings = get_settings()
-    engine = create_async_engine(str(settings.database_url))
+async def main() -> None:
+    """Verify that the configured database is reachable."""
 
     try:
         async with engine.connect() as connection:
             result = await connection.execute(text("SELECT 1"))
-            print(f"Database connection successful: {result.scalar_one()}")
+            value = result.scalar_one()
+
+            print(f"Database connection successful: {value}")
+
+    except Exception as exc:
+        print(f"Database connection failed: {type(exc).__name__}: {exc}")
+        raise
+
     finally:
         await engine.dispose()
 
 
 if __name__ == "__main__":
-    asyncio.run(test_connection())
+    asyncio.run(main())

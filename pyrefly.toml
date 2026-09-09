@@ -1,0 +1,7 @@
+project-includes = ["backend"]
+project-excludes = [
+    "**/node_modules",
+    "**/.venv",
+]
+search-path = ["backend"]
+infer-with-first-use = false

@@ -11,7 +11,14 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from app.core.config import get_settings
 from app.shared.database import Base
 
-# Register implemented models before Alembic reads Base.metadata.
+# Register all implemented ORM models before Alembic reads Base.metadata.
+from app.modules.api.v1.bookings.models import Booking  # noqa: F401
+from app.modules.api.v1.messaging.models import TripMessage  # noqa: F401
+from app.modules.api.v1.notifications.models import Notification  # noqa: F401
+from app.modules.api.v1.payments.models import Payment  # noqa: F401
+from app.modules.api.v1.reviews.models import Review  # noqa: F401
+from app.modules.api.v1.rides.models import Ride  # noqa: F401
+from app.modules.api.v1.safety.models import IncidentReport  # noqa: F401
 from app.modules.api.v1.users.models import Profile, User  # noqa: F401
 from app.modules.api.v1.vehicles.models import Vehicle  # noqa: F401
 
@@ -20,7 +27,6 @@ config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
 
 config.set_main_option(
     "sqlalchemy.url",

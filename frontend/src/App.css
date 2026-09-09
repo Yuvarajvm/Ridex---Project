@@ -1,5 +1,5 @@
 /* =========================================================
-   RIDEX — GLOBAL APP STYLES
+   RIDEX GLOBAL APPLICATION STYLES
    ========================================================= */
 
 :root {
@@ -12,12 +12,10 @@
     "Segoe UI",
     sans-serif;
 
-  color: #171b2e;
-  background: #f7f5ef;
+  color: #17203b;
+  background: #f5f2ea;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
@@ -25,29 +23,23 @@
 }
 
 html {
-  min-width: 320px;
-  background: #f7f5ef;
-  scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  background: #f5f2ea;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: #f7f5ef;
-  color: #171b2e;
+  background: #f5f2ea;
 }
 
 button,
 input,
-textarea,
-select {
+select,
+textarea {
   font: inherit;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
 }
 
 button {
@@ -56,305 +48,277 @@ button {
 
 a {
   color: inherit;
-  text-decoration: none;
-}
-
-img,
-svg {
-  display: block;
-  max-width: 100%;
 }
 
 #root {
   min-height: 100vh;
 }
 
-.ridex-app {
+/* =========================================================
+   RIDEX APP SHELL
+   ========================================================= */
+
+.ridex-app-shell {
   min-height: 100vh;
-  background: #f7f5ef;
+  background: #f5f2ea;
 }
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .ridex-header {
   position: relative;
-  z-index: 100;
+  z-index: 1000;
   width: 100%;
-  background: rgba(247, 245, 239, 0.94);
-  border-bottom: 1px solid rgba(23, 27, 46, 0.08);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: #26345f;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .ridex-header-inner {
-  width: min(1180px, calc(100% - 40px));
-  min-height: 76px;
+  width: min(1280px, calc(100% - 48px));
+  min-height: 72px;
   margin: 0 auto;
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 32px;
+  gap: 48px;
 }
+
+/* Logo */
 
 .ridex-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
   flex-shrink: 0;
-  font-weight: 900;
-  letter-spacing: -0.04em;
-}
 
-.ridex-logo-mark {
-  width: 34px;
-  height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 11px;
-  background: #171b2e;
-  color: #baf3d2;
-  font-size: 18px;
+  color: #ffffff;
+  text-decoration: none;
+
+  font-size: 30px;
   line-height: 1;
+  font-weight: 850;
+  letter-spacing: -0.065em;
 }
 
-.ridex-logo-text {
-  font-size: 21px;
-  letter-spacing: -0.05em;
+.ridex-logo span {
+  color: #a9dfc6;
 }
+
+/* Main navigation */
 
 .ridex-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-left: auto;
+  gap: 34px;
 }
 
-.ridex-nav-link {
+.ridex-nav a {
   position: relative;
-  padding: 10px 14px;
-  color: #64687a;
+
+  padding: 27px 0;
+
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+
   font-size: 14px;
-  font-weight: 700;
-  border-radius: 10px;
+  line-height: 1;
+  font-weight: 650;
+
   transition:
-    color 0.2s ease,
-    background 0.2s ease;
+    color 160ms ease;
 }
 
-.ridex-nav-link:hover {
-  color: #171b2e;
-  background: rgba(61, 70, 199, 0.06);
+.ridex-nav a:hover {
+  color: #ffffff;
 }
 
-.ridex-nav-link.active {
-  color: #171b2e;
+.ridex-nav a:first-child {
+  color: #ffffff;
 }
 
-.ridex-nav-link.active::after {
+.ridex-nav a:first-child::after {
   content: "";
+
   position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 3px;
+  left: 0;
+  right: 0;
+  bottom: 19px;
+
   height: 2px;
+
   border-radius: 999px;
-  background: #3d46c7;
+
+  background: #a9dfc6;
 }
+
+/* Right side */
 
 .ridex-header-actions {
+  margin-left: auto;
+
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+  gap: 24px;
 }
 
-.ridex-header-login,
-.ridex-header-signup {
+.ridex-login-link {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 650;
+
+  transition: color 160ms ease;
+}
+
+.ridex-login-link:hover {
+  color: #a9dfc6;
+}
+
+.ridex-get-started {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 42px;
-  padding: 0 17px;
+
+  min-height: 43px;
+  padding: 0 19px;
+
   border-radius: 11px;
+
+  background: #e98570;
+  color: #ffffff;
+
+  text-decoration: none;
+
   font-size: 14px;
   font-weight: 800;
-  cursor: pointer;
+
   transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    color 0.2s ease;
+    background 160ms ease,
+    transform 160ms ease;
 }
 
-.ridex-header-login {
-  color: #171b2e;
-  background: transparent;
-}
-
-.ridex-header-login:hover {
-  background: rgba(23, 27, 46, 0.06);
-}
-
-.ridex-header-signup {
-  color: #ffffff;
-  background: #3d46c7;
-}
-
-.ridex-header-signup:hover {
-  background: #3038ac;
+.ridex-get-started:hover {
+  background: #df7864;
   transform: translateY(-1px);
 }
 
-/* =========================================================
-   FOOTER
-   ========================================================= */
-
-.ridex-footer {
-  margin-top: 80px;
-  background: #171b2e;
-  color: #ffffff;
-}
-
-.ridex-footer-inner {
-  width: min(1180px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 64px 0 52px;
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 80px;
-}
-
-.ridex-footer-brand {
-  max-width: 340px;
-}
-
-.ridex-footer-logo {
-  display: inline-flex;
+.ridex-user-badge {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 21px;
-  font-weight: 900;
-  letter-spacing: -0.04em;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.ridex-footer-logo .ridex-logo-mark {
-  background: #baf3d2;
-  color: #171b2e;
-}
-
-.ridex-footer-brand p {
-  margin: 20px 0 0;
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 14px;
-  line-height: 1.8;
-}
-
-.ridex-footer-links {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-}
-
-.ridex-footer-links div {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.ridex-footer-links h4 {
-  margin: 0 0 5px;
+.ridex-user-name {
   color: #ffffff;
-  font-size: 12px;
-  font-weight: 900;
-  letter-spacing: 0.1em;
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+.ridex-role-tag {
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #a9dfc6;
+  color: #1c6c47;
 }
 
-.ridex-footer-links a,
-.ridex-footer-links span {
-  color: rgba(255, 255, 255, 0.58);
+.ridex-logout-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 8px 16px;
+  border-radius: 9px;
   font-size: 13px;
-  line-height: 1.5;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 160ms ease;
 }
 
-.ridex-footer-links a {
-  transition: color 0.2s ease;
-}
-
-.ridex-footer-links a:hover {
-  color: #baf3d2;
-}
-
-.ridex-footer-bottom {
-  width: min(1180px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 20px 0 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  color: rgba(255, 255, 255, 0.38);
-  font-size: 12px;
+.ridex-logout-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* =========================================================
-   RESPONSIVE HEADER / FOOTER
+   MAIN
    ========================================================= */
 
-@media (max-width: 820px) {
+.ridex-app-shell > main {
+  min-height: calc(100vh - 72px);
+}
+
+/* =========================================================
+   RESPONSIVE HEADER
+   ========================================================= */
+
+@media (max-width: 850px) {
   .ridex-header-inner {
-    width: min(100% - 28px, 1180px);
-    min-height: 68px;
+    width: min(100% - 32px, 720px);
+    min-height: 66px;
+    gap: 24px;
+  }
+
+  .ridex-nav {
+    gap: 20px;
+  }
+
+  .ridex-nav a {
+    font-size: 13px;
+  }
+
+  .ridex-header-actions {
     gap: 14px;
+  }
+
+  .ridex-login-link {
+    font-size: 13px;
+  }
+
+  .ridex-get-started {
+    min-height: 40px;
+    padding: 0 15px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 680px) {
+  .ridex-header-inner {
+    width: min(100% - 32px, 600px);
   }
 
   .ridex-nav {
     display: none;
   }
 
-  .ridex-header-login {
-    display: none;
-  }
-
-  .ridex-header-signup {
-    min-height: 38px;
-    padding: 0 14px;
-    font-size: 13px;
-  }
-
-  .ridex-footer-inner {
-    width: min(100% - 28px, 1180px);
-    padding: 48px 0 40px;
-    grid-template-columns: 1fr;
-    gap: 42px;
-  }
-
-  .ridex-footer-bottom {
-    width: min(100% - 28px, 1180px);
+  .ridex-header-actions {
+    margin-left: auto;
   }
 }
 
-@media (max-width: 560px) {
-  .ridex-logo-text {
-    font-size: 18px;
+@media (max-width: 420px) {
+  .ridex-header-inner {
+    width: calc(100% - 24px);
   }
 
-  .ridex-logo-mark {
-    width: 31px;
-    height: 31px;
-    border-radius: 9px;
+  .ridex-logo {
+    font-size: 27px;
   }
 
-  .ridex-footer-links {
-    grid-template-columns: 1fr 1fr;
-    gap: 28px 18px;
+  .ridex-login-link {
+    display: none;
   }
 
-  .ridex-footer-links div:last-child {
-    grid-column: 1 / -1;
-  }
-
-  .ridex-footer-bottom {
-    flex-direction: column;
-    gap: 7px;
+  .ridex-get-started {
+    min-height: 38px;
+    padding: 0 13px;
   }
 }

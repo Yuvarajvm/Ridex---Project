@@ -22,6 +22,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.shared.database import Base, TimestampMixin, UUIDPrimaryKeyMixin
 
 if TYPE_CHECKING:
+    from app.modules.api.v1.bookings.models import Booking
     from app.modules.api.v1.users.models import User
     from app.modules.api.v1.vehicles.models import Vehicle
 
@@ -54,7 +55,7 @@ class Ride(UUIDPrimaryKeyMixin, TimestampMixin, Base):
             name="ck_rides_departure_after_creation",
         ),
         CheckConstraint(
-            "available_seats BETWEEN 1 AND 8",
+            "available_seats BETWEEN 0 AND 8",
             name="ck_rides_available_seats",
         ),
         CheckConstraint(
@@ -133,4 +134,9 @@ class Ride(UUIDPrimaryKeyMixin, TimestampMixin, Base):
 
     vehicle: Mapped["Vehicle"] = relationship(
         "Vehicle",
+    )
+
+    bookings: Mapped[list["Booking"]] = relationship(
+        "Booking",
+        back_populates="ride",
     )

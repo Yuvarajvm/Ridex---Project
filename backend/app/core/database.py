@@ -8,20 +8,19 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
+from sqlalchemy.pool import NullPool
 
 from app.core.config import get_settings
 from app.shared.database import Base
 
-
 settings = get_settings()
-
 
 engine = create_async_engine(
     str(settings.database_url),
     echo=settings.sql_echo,
     pool_pre_ping=True,
+    poolclass=NullPool,
 )
-
 
 AsyncSessionFactory = async_sessionmaker(
     bind=engine,
@@ -31,8 +30,7 @@ AsyncSessionFactory = async_sessionmaker(
 
 
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    """
-    Provide a database session for a request.
+    """Provide a database session for a request.
 
     Transactions are rolled back automatically when an exception escapes
     the request handler.

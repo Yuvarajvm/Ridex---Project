@@ -4,9 +4,11 @@ from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import func, select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.api.v1.rides.models import Ride
+from app.modules.api.v1.users.models import User
 
 
 class RideRepository:
@@ -23,7 +25,12 @@ class RideRepository:
 
     async def get_by_id(self, ride_id: UUID) -> Ride | None:
         result = await self.session.execute(
-            select(Ride).where(
+            select(Ride)
+            .options(
+                joinedload(Ride.driver).joinedload(User.profile),
+                joinedload(Ride.vehicle),
+            )
+            .where(
                 Ride.id == ride_id,
                 Ride.deleted_at.is_(None),
             )
@@ -43,10 +50,12 @@ class RideRepository:
         )
 
         if origin:
-            query = query.where(Ride.origin.ilike(f"%{origin}%"))
+            query = query.where(Ride.origin.ilike(f"%{origin.strip()}%"))
 
         if destination:
-            query = query.where(Ride.destination.ilike(f"%{destination}%"))
+            query = query.where(
+                Ride.destination.ilike(f"%{destination.strip()}%")
+            )
 
         if departure_from:
             query = query.where(Ride.departure_at >= departure_from)
@@ -68,6 +77,10 @@ class RideRepository:
     ) -> list[Ride]:
         query = (
             select(Ride)
+            .options(
+                joinedload(Ride.driver).joinedload(User.profile),
+                joinedload(Ride.vehicle),
+            )
             .where(
                 Ride.deleted_at.is_(None),
                 Ride.status == "scheduled",
@@ -78,10 +91,12 @@ class RideRepository:
         )
 
         if origin:
-            query = query.where(Ride.origin.ilike(f"%{origin}%"))
+            query = query.where(Ride.origin.ilike(f"%{origin.strip()}%"))
 
         if destination:
-            query = query.where(Ride.destination.ilike(f"%{destination}%"))
+            query = query.where(
+                Ride.destination.ilike(f"%{destination.strip()}%")
+            )
 
         if departure_from:
             query = query.where(Ride.departure_at >= departure_from)
@@ -90,8 +105,8 @@ class RideRepository:
             query = query.where(Ride.departure_at <= departure_to)
 
         result = await self.session.execute(query)
-        return list(result.scalars().all())
-    
+        return list(result.scalars().unique().all())
+
     async def search_locations(
         self,
         query: str | None,
@@ -109,14 +124,19 @@ class RideRepository:
 
         if query:
             pattern = f"%{query.strip()}%"
-            origin_query = origin_query.where(Ride.origin.ilike(pattern))
+            origin_query = origin_query.where(
+                Ride.origin.ilike(pattern)
+            )
             destination_query = destination_query.where(
                 Ride.destination.ilike(pattern)
             )
 
-        location_query = origin_query.union(destination_query).order_by(
-            "origin"
-        ).limit(limit)
+        location_query = (
+            origin_query
+            .union(destination_query)
+            .order_by("origin")
+            .limit(limit)
+        )
 
         result = await self.session.execute(location_query)
 

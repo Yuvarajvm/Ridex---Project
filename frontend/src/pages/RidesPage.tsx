@@ -1,143 +1,110 @@
-import { Link, useSearchParams } from 'react-router-dom'
+import {
+  Link,
+  useSearchParams,
+} from 'react-router-dom'
 
 import { useSearchRides } from '../features/rides/hooks/useSearchRides'
 import type { Ride } from '../features/rides/types'
+
 import './rides.css'
 
-function ArrowRightIcon() {
-  return (
-    <svg width="17" height="17" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M4 10H16M11 5L16 10L11 15"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function ClockIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <circle
-        cx="10"
-        cy="10"
-        r="7"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M10 6V10L12.5 12"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function SeatIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-      <circle
-        cx="10"
-        cy="6"
-        r="2.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M5.5 16C5.9 12.7 7.4 11 10 11C12.6 11 14.1 12.7 14.5 16"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function formatTime(value: string): string {
-  return new Intl.DateTimeFormat('en-IN', {
-    hour: 'numeric',
-    minute: '2-digit',
-  }).format(new Date(value))
-}
-
-function formatDate(value: string): string {
+function formatDate(value: string) {
   return new Intl.DateTimeFormat('en-IN', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
+    year: 'numeric',
   }).format(new Date(value))
 }
 
-function formatPrice(value: string): string {
+function formatTime(value: string) {
+  return new Intl.DateTimeFormat('en-IN', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  }).format(new Date(value))
+}
+
+function formatPrice(value: number | string) {
   return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'INR',
     maximumFractionDigits: 0,
   }).format(Number(value))
 }
 
 function RideCard({ ride }: { ride: Ride }) {
   return (
-    <article className="ride-card">
+    <article className="ride-result-card">
       <div className="ride-main">
-        <div className="ride-time-column">
+        <div className="ride-time-block">
           <strong>{formatTime(ride.departure_at)}</strong>
           <span>{ride.origin}</span>
+          <small>{formatDate(ride.departure_at)}</small>
         </div>
 
-        <div className="ride-route-line">
-          <span className="route-dot" />
-          <span className="route-stroke" />
-          <span className="route-dot route-dot-end" />
+        <div className="ride-route-line" aria-hidden="true">
+          <span />
+          <div />
+          <span />
         </div>
 
-        <div className="ride-time-column destination">
+        <div className="ride-destination-block">
           <strong>{ride.destination}</strong>
-          <span>Destination</span>
+          <span>Arrival</span>
+          <small>{formatDate(ride.departure_at)}</small>
         </div>
+
+        <div className="ride-price-block">
+          <span>per seat</span>
+          <strong>₹{formatPrice(ride.price_per_seat)}</strong>
+        </div>
+
+        <Link
+          className="ride-view-button"
+          to={`/rides/${ride.id}`}
+        >
+          View ride
+          <span aria-hidden="true">→</span>
+        </Link>
       </div>
 
-      <div className="ride-divider" />
+      <div className="ride-meta">
+        <span>
+          <b>{ride.available_seats}</b> seats available
+        </span>
 
-      <div className="ride-bottom">
-        <div className="ride-meta">
-          <span>
-            <ClockIcon />
-            {formatDate(ride.departure_at)}
-          </span>
+        <span>{ride.vehicle ? `${ride.vehicle.make} ${ride.vehicle.model}` : 'Car'}</span>
 
-          <span>
-            <SeatIcon />
-            {ride.available_seats} seats
-          </span>
-        </div>
+        <span>{ride.driver?.full_name || 'Driver'}</span>
 
-        <div className="ride-price">
-          <small>per seat</small>
-          <strong>{formatPrice(ride.price_per_seat)}</strong>
-        </div>
-
-        <Link className="ride-view-button" to={`/rides/${ride.id}`}>
-          View ride
-          <ArrowRightIcon />
-        </Link>
+        <span className="ride-verified">
+          <span className="verified-mark">✓</span>
+          Verified ride
+        </span>
       </div>
     </article>
   )
 }
 
-function LoadingCard() {
+function EmptyState({
+  origin,
+  destination,
+}: {
+  origin: string
+  destination: string
+}) {
   return (
-    <div className="ride-card skeleton-card">
-      <div className="skeleton skeleton-route" />
-      <div className="skeleton-divider" />
-      <div className="skeleton skeleton-bottom" />
+    <div className="ride-empty-state">
+      <div className="empty-icon">—</div>
+      <h2>No rides found</h2>
+      <p>
+        We could not find a ride from {origin} to {destination}{' '}
+        for this date.
+      </p>
+
+      <Link className="empty-action" to="/">
+        Search another date
+        <span aria-hidden="true">→</span>
+      </Link>
     </div>
   )
 }
@@ -149,100 +116,251 @@ export function RidesPage() {
   const destination = searchParams.get('destination') ?? ''
   const date = searchParams.get('date') ?? ''
 
-  const { data, isLoading, isError, refetch } = useSearchRides({
-    origin: origin || undefined,
-    destination: destination || undefined,
-    date: date || undefined,
+  const {
+    data,
+    isLoading,
+    isError,
+  } = useSearchRides({
+    origin,
+    destination,
+    date,
   })
 
-  const title =
-    origin && destination
-      ? `${origin} to ${destination}`
-      : 'Available rides'
+  const rides = data?.items ?? []
+  const resultCount = data?.total ?? rides.length
+
+  const headingDate = date
+    ? new Date(`${date}T12:00:00`)
+    : undefined
+
+  const formattedHeadingDate = headingDate
+    ? new Intl.DateTimeFormat('en-IN', {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }).format(headingDate)
+    : 'your selected date'
 
   return (
     <div className="rides-page">
       <section className="rides-hero">
         <div className="rides-hero-inner">
-          <Link className="back-link" to="/">
-            Back to search
-          </Link>
+          <div>
+            <p className="rides-eyebrow">RIDE RESULTS</p>
 
-          <div className="results-heading">
-            <div>
-              <span className="section-label">RIDEX MARKETPLACE</span>
-              <h1>{title}</h1>
+            <h1>
+              {origin || 'Any location'}
+              <span> to </span>
+              {destination || 'Any destination'}
+            </h1>
 
-              <p>
-                {date
-                  ? `Rides available on ${formatDate(`${date}T12:00:00`)}`
-                  : 'Discover rides heading your way.'}
-              </p>
-            </div>
-
-            <div className="result-count">
-              <strong>{data?.total ?? 0}</strong>
-              <span>rides found</span>
-            </div>
+            <p className="rides-subtitle">
+              {resultCount} {resultCount === 1 ? 'ride' : 'rides'}{' '}
+              available on {formattedHeadingDate}
+            </p>
           </div>
-        </div>
-      </section>
 
-      <main className="results-container">
-        <div className="results-toolbar">
-          <span>
-            {isLoading
-              ? 'Finding the best rides...'
-              : `${data?.total ?? 0} matching rides`}
-          </span>
-
-          <Link className="modify-search" to="/">
+          <Link className="modify-search-button" to="/">
+            <span aria-hidden="true">←</span>
             Modify search
           </Link>
         </div>
+      </section>
 
-        <section className="rides-list">
+      <main className="rides-content">
+        <aside className="rides-filters">
+          <div className="filter-heading">
+            <h2>Filters</h2>
+            <p>Refine your results</p>
+          </div>
+
+          <div className="filter-group">
+            <h3>Time</h3>
+
+            <label>
+              <input type="checkbox" />
+              <span>Before 6 AM</span>
+            </label>
+
+            <label>
+              <input type="checkbox" />
+              <span>6 AM – 12 PM</span>
+            </label>
+
+            <label>
+              <input type="checkbox" />
+              <span>12 PM – 6 PM</span>
+            </label>
+
+            <label>
+              <input type="checkbox" />
+              <span>After 6 PM</span>
+            </label>
+          </div>
+
+          <div className="filter-group">
+            <h3>Price range (₹)</h3>
+
+            <div className="price-inputs">
+              <input
+                type="number"
+                placeholder="Min"
+                min="0"
+              />
+
+              <span>–</span>
+
+              <input
+                type="number"
+                placeholder="Max"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div className="filter-group">
+            <h3>Seats</h3>
+
+            <label>
+              <input type="checkbox" />
+              <span>1 seat</span>
+            </label>
+
+            <label>
+              <input type="checkbox" />
+              <span>2 seats</span>
+            </label>
+
+            <label>
+              <input type="checkbox" />
+              <span>3+ seats</span>
+            </label>
+          </div>
+
+          <button
+            type="button"
+            className="apply-filter-button"
+          >
+            Apply filters
+          </button>
+        </aside>
+
+        <section className="rides-results">
+          <div className="results-toolbar">
+            <span>
+              {isLoading
+                ? 'Finding rides...'
+                : `${resultCount} ${
+                    resultCount === 1
+                      ? 'ride found'
+                      : 'rides found'
+                  }`}
+            </span>
+
+            <label className="sort-control">
+              <span>Sort by</span>
+              <select defaultValue="departure">
+                <option value="departure">
+                  Departure time (earliest)
+                </option>
+                <option value="price">
+                  Price (lowest)
+                </option>
+                <option value="seats">
+                  Most seats available
+                </option>
+              </select>
+            </label>
+          </div>
+
           {isLoading && (
-            <>
-              <LoadingCard />
-              <LoadingCard />
-              <LoadingCard />
-            </>
-          )}
-
-          {isError && (
-            <div className="state-card">
-              <div className="state-icon">!</div>
-              <h2>We couldn't load the rides.</h2>
-              <p>
-                The marketplace is temporarily unavailable.
-                Please try again.
-              </p>
-              <button type="button" onClick={() => refetch()}>
-                Try again
-              </button>
+            <div className="ride-loading">
+              <div className="loading-bar" />
+              <p>Finding available rides...</p>
             </div>
           )}
 
-          {!isLoading && !isError && data?.items.length === 0 && (
-            <div className="state-card">
-              <div className="state-icon">R</div>
-              <h2>No rides found yet.</h2>
+          {!isLoading && isError && (
+            <div className="ride-error-state">
+              <h2>Unable to load rides</h2>
               <p>
-                Try a nearby city, another date, or broaden your
-                search.
+                Something went wrong while loading the
+                marketplace.
               </p>
-              <Link to="/">Search again</Link>
+
+              <Link to="/" className="empty-action">
+                Back to search
+                <span aria-hidden="true">→</span>
+              </Link>
             </div>
           )}
 
           {!isLoading &&
             !isError &&
-            data?.items.map((ride) => (
-              <RideCard key={ride.id} ride={ride} />
-            ))}
+            rides.length === 0 && (
+              <EmptyState
+                origin={origin}
+                destination={destination}
+              />
+            )}
+
+          {!isLoading &&
+            !isError &&
+            rides.length > 0 && (
+              <div className="ride-list">
+                {rides.map((ride: Ride) => (
+                  <RideCard
+                    key={ride.id}
+                    ride={ride}
+                  />
+                ))}
+              </div>
+            )}
+
+          {!isLoading &&
+            !isError &&
+            rides.length > 0 && (
+              <div className="travel-banner">
+                <div className="travel-banner-icon">
+                  <span>↗</span>
+                </div>
+
+                <div>
+                  <strong>
+                    Travel together. Go further.
+                  </strong>
+
+                  <p>
+                    Save money, reduce emissions, and make
+                    new connections.
+                  </p>
+                </div>
+
+                <span className="travel-banner-side">
+                  A greener, friendlier way to travel
+                </span>
+              </div>
+            )}
         </section>
       </main>
+
+      <footer className="rides-footer">
+        <div>
+          <strong>
+            RIDE<span>X</span>
+          </strong>
+          <small>Move together</small>
+        </div>
+
+        <nav>
+          <a href="#about">About</a>
+          <a href="#safety">Safety</a>
+          <a href="#help">Help</a>
+          <a href="#terms">Terms</a>
+          <a href="#privacy">Privacy</a>
+        </nav>
+      </footer>
     </div>
   )
 }

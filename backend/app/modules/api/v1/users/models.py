@@ -22,9 +22,10 @@ from app.shared.database import (
     TimestampMixin,
     UUIDPrimaryKeyMixin,
 )
-from app.modules.api.v1.rides.models import Ride
 
 if TYPE_CHECKING:
+    from app.modules.api.v1.bookings.models import Booking
+    from app.modules.api.v1.payments.models import Payment
     from app.modules.api.v1.rides.models import Ride
     from app.modules.api.v1.vehicles.models import Vehicle
 
@@ -148,17 +149,49 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         nullable=True,
     )
 
-    profile: Mapped[Profile | None] = relationship(
+    profile: Mapped["Profile | None"] = relationship(
+        "Profile",
         back_populates="user",
         uselist=False,
     )
 
-    vehicles: Mapped[list[Vehicle]] = relationship(
+    vehicles: Mapped[list["Vehicle"]] = relationship(
+        "Vehicle",
         back_populates="owner",
     )
+
     rides: Mapped[list["Ride"]] = relationship(
+        "Ride",
         back_populates="driver",
     )
+
+    bookings: Mapped[list["Booking"]] = relationship(
+        "Booking",
+        back_populates="rider",
+    )
+
+    payments: Mapped[list["Payment"]] = relationship(
+        "Payment",
+        back_populates="payer",
+    )
+
+    @property
+    def full_name(self) -> str | None:
+        """Convenience property for display name or concatenated first/last name."""
+        if self.profile:
+            names = [self.profile.first_name, self.profile.last_name]
+            joined = " ".join(n for n in names if n)
+            if joined:
+                return joined
+            if self.profile.display_name:
+                return self.profile.display_name
+        return None
+
+    @property
+    def avatar_url(self) -> str | None:
+        """Convenience property for avatar URL."""
+        return self.profile.avatar_url if self.profile else None
+
 
 class Profile(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     """
@@ -267,7 +300,7 @@ class Profile(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         nullable=True,
     )
 
-    user: Mapped[User] = relationship(
+    user: Mapped["User"] = relationship(
+        "User",
         back_populates="profile",
     )
-    

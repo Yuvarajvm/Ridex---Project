@@ -175,6 +175,7 @@ class Vehicle(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         server_default="true",
     )
 
-    owner: Mapped[User] = relationship(
+    owner: Mapped["User"] = relationship(
+        "User",
         back_populates="vehicles",
     )

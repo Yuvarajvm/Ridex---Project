@@ -244,9 +244,9 @@ function isSameMonth(
 ): boolean {
   return (
     first.getFullYear() ===
-      second.getFullYear() &&
+    second.getFullYear() &&
     first.getMonth() ===
-      second.getMonth()
+    second.getMonth()
   )
 }
 
@@ -423,7 +423,7 @@ export function HomePage() {
       !cleanOrigin ||
       !cleanDestination ||
       cleanOrigin.toLowerCase() ===
-        cleanDestination.toLowerCase()
+      cleanDestination.toLowerCase()
     ) {
       queueMicrotask(() => {
         setAvailableDates(new Set())
@@ -552,9 +552,9 @@ export function HomePage() {
       } catch (error) {
         if (
           error instanceof
-            DOMException &&
+          DOMException &&
           error.name ===
-            'AbortError'
+          'AbortError'
         ) {
           return
         }
@@ -695,7 +695,7 @@ export function HomePage() {
           new Date(
             current.getFullYear(),
             current.getMonth() +
-              offset,
+            offset,
             1,
           )
 
@@ -930,7 +930,7 @@ export function HomePage() {
                   className={[
                     'ridex-input',
                     activeLocationField ===
-                    'origin'
+                      'origin'
                       ? 'is-active'
                       : '',
                   ]
@@ -950,16 +950,17 @@ export function HomePage() {
                       )
                     }
                     onChange={(event) => {
-                      setOrigin(
-                        event.target.value,
-                      )
+                      const value = event.target.value;
 
-                      setDate('')
-                      setSearchError('')
+                      // Allow letters, spaces, hyphens, apostrophes, commas and periods
+                      if (!/^[a-zA-Z\s,'\-.]*$/.test(value)) {
+                        return;
+                      }
 
-                      setActiveLocationField(
-                        'origin',
-                      )
+                      setOrigin(value);
+                      setDate('');
+                      setSearchError('');
+                      setActiveLocationField('origin');
                     }}
                   />
                 </div>
@@ -967,7 +968,7 @@ export function HomePage() {
                 {activeLocationField ===
                   'origin' &&
                   originSuggestions.length >
-                    0 && (
+                  0 && (
                     <div className="ridex-suggestions">
                       {originSuggestions.map(
                         (location) => (
@@ -1022,7 +1023,7 @@ export function HomePage() {
                   className={[
                     'ridex-input',
                     activeLocationField ===
-                    'destination'
+                      'destination'
                       ? 'is-active'
                       : '',
                   ]
@@ -1042,16 +1043,21 @@ export function HomePage() {
                       )
                     }
                     onChange={(event) => {
-                      setDestination(
-                        event.target.value,
-                      )
+                      const value = event.target.value;
 
-                      setDate('')
-                      setSearchError('')
+                      // Allow letters, spaces, hyphens, apostrophes, commas and periods
+                      if (!/^[a-zA-Z\s,'\-.]*$/.test(value)) {
+                        return;
+                      }
+
+                      setDestination(value);
+
+                      setDate('');
+                      setSearchError('');
 
                       setActiveLocationField(
                         'destination',
-                      )
+                      );
                     }}
                   />
                 </div>
@@ -1059,7 +1065,7 @@ export function HomePage() {
                 {activeLocationField ===
                   'destination' &&
                   destinationSuggestions.length >
-                    0 && (
+                  0 && (
                     <div className="ridex-suggestions">
                       {destinationSuggestions.map(
                         (location) => (
@@ -1115,9 +1121,9 @@ export function HomePage() {
                     !origin.trim() ||
                     !destination.trim() ||
                     origin.trim().toLowerCase() ===
-                      destination
-                        .trim()
-                        .toLowerCase()
+                    destination
+                      .trim()
+                      .toLowerCase()
                   }
                   onClick={() =>
                     setCalendarOpen(
@@ -1131,8 +1137,8 @@ export function HomePage() {
                   <span>
                     {date
                       ? formatSelectedDate(
-                          date,
-                        )
+                        date,
+                      )
                       : 'Select travel date'}
                   </span>
                 </button>
@@ -1141,9 +1147,9 @@ export function HomePage() {
                   origin.trim() &&
                   destination.trim() &&
                   origin.trim().toLowerCase() !==
-                    destination
-                      .trim()
-                      .toLowerCase() && (
+                  destination
+                    .trim()
+                    .toLowerCase() && (
                     <div className="ridex-calendar">
                       <button
                         type="button"
@@ -1284,9 +1290,9 @@ export function HomePage() {
                   !origin.trim() ||
                   !destination.trim() ||
                   origin.trim().toLowerCase() ===
-                    destination
-                      .trim()
-                      .toLowerCase()
+                  destination
+                    .trim()
+                    .toLowerCase()
                 }
               >
                 Search rides

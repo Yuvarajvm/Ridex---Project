@@ -110,7 +110,11 @@ export function RegisterPage() {
                 className="ridex-form-input"
                 placeholder="First name"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  setFirstName(value);
+                }}
+                maxLength={14}
                 disabled={isLoading}
                 required
               />
@@ -126,8 +130,13 @@ export function RegisterPage() {
                 className="ridex-form-input"
                 placeholder="Last name"
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
+                  setLastName(value);
+                }}
+                maxLength={14}
                 disabled={isLoading}
+                required
               />
             </div>
           </div>
@@ -157,11 +166,15 @@ export function RegisterPage() {
               id="phone"
               type="tel"
               className="ridex-form-input"
-              placeholder="+91 98765 43210"
+              placeholder="Phone number"
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setPhoneNumber(value);
+              }}
+              maxLength={10}
               disabled={isLoading}
-              autoComplete="tel"
+              required
             />
           </div>
 

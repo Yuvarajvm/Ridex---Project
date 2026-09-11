@@ -950,16 +950,15 @@ export function HomePage() {
                       )
                     }
                     onChange={(event) => {
-                      setOrigin(
-                        event.target.value,
-                      )
+                      const value = event.target.value
+                      if (!/^[\p{L}0-9\s,'\-.]*$/u.test(value)) {
+                        return
+                      }
 
+                      setOrigin(value)
                       setDate('')
                       setSearchError('')
-
-                      setActiveLocationField(
-                        'origin',
-                      )
+                      setActiveLocationField('origin')
                     }}
                   />
                 </div>
@@ -1042,16 +1041,15 @@ export function HomePage() {
                       )
                     }
                     onChange={(event) => {
-                      setDestination(
-                        event.target.value,
-                      )
+                      const value = event.target.value
+                      if (!/^[\p{L}0-9\s,'\-.]*$/u.test(value)) {
+                        return
+                      }
 
+                      setDestination(value)
                       setDate('')
                       setSearchError('')
-
-                      setActiveLocationField(
-                        'destination',
-                      )
+                      setActiveLocationField('destination')
                     }}
                   />
                 </div>

@@ -36,6 +36,17 @@ export function RegisterPage() {
       return
     }
 
+    if (firstName.trim().length < 2) {
+      setErrorMessage('First name must be at least 2 characters.')
+      return
+    }
+
+    const cleanPhone = phoneNumber.trim()
+    if (cleanPhone && cleanPhone.length !== 10) {
+      setErrorMessage('Please enter a valid 10-digit mobile number.')
+      return
+    }
+
     if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters.')
       return
@@ -110,7 +121,11 @@ export function RegisterPage() {
                 className="ridex-form-input"
                 placeholder="First name"
                 value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\p{L}\s'-]/gu, '')
+                  setFirstName(value)
+                }}
+                maxLength={50}
                 disabled={isLoading}
                 required
               />
@@ -126,7 +141,11 @@ export function RegisterPage() {
                 className="ridex-form-input"
                 placeholder="Last name"
                 value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^\p{L}\s'-]/gu, '')
+                  setLastName(value)
+                }}
+                maxLength={50}
                 disabled={isLoading}
               />
             </div>
@@ -157,9 +176,13 @@ export function RegisterPage() {
               id="phone"
               type="tel"
               className="ridex-form-input"
-              placeholder="+91 98765 43210"
+              placeholder="10-digit mobile number"
               value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, '')
+                setPhoneNumber(value)
+              }}
+              maxLength={10}
               disabled={isLoading}
               autoComplete="tel"
             />

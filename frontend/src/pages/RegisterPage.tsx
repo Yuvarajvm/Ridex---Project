@@ -36,6 +36,17 @@ export function RegisterPage() {
       return
     }
 
+    if (firstName.trim().length < 2) {
+      setErrorMessage('First name must be at least 2 characters.')
+      return
+    }
+
+    const cleanPhone = phoneNumber.trim()
+    if (cleanPhone && cleanPhone.length !== 10) {
+      setErrorMessage('Please enter a valid 10-digit mobile number.')
+      return
+    }
+
     if (password.length < 8) {
       setErrorMessage('Password must be at least 8 characters.')
       return
@@ -111,10 +122,10 @@ export function RegisterPage() {
                 placeholder="First name"
                 value={firstName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
-                  setFirstName(value);
+                  const value = e.target.value.replace(/[^\p{L}\s'-]/gu, '')
+                  setFirstName(value)
                 }}
-                maxLength={14}
+                maxLength={50}
                 disabled={isLoading}
                 required
               />
@@ -131,12 +142,11 @@ export function RegisterPage() {
                 placeholder="Last name"
                 value={lastName}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/[^A-Za-z]/g, "");
-                  setLastName(value);
+                  const value = e.target.value.replace(/[^\p{L}\s'-]/gu, '')
+                  setLastName(value)
                 }}
-                maxLength={14}
+                maxLength={50}
                 disabled={isLoading}
-                required
               />
             </div>
           </div>
@@ -166,15 +176,15 @@ export function RegisterPage() {
               id="phone"
               type="tel"
               className="ridex-form-input"
-              placeholder="Phone number"
+              placeholder="10-digit mobile number"
               value={phoneNumber}
               onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, "");
-                setPhoneNumber(value);
+                const value = e.target.value.replace(/\D/g, '')
+                setPhoneNumber(value)
               }}
               maxLength={10}
               disabled={isLoading}
-              required
+              autoComplete="tel"
             />
           </div>
 

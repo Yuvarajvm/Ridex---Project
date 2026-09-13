@@ -12,6 +12,7 @@ from app.core.config import get_settings
 from app.shared.database import Base
 
 # Register all implemented ORM models before Alembic reads Base.metadata.
+from app.modules.api.v1.auth.models import AuthIdentity, PasswordResetToken  # noqa: F401
 from app.modules.api.v1.bookings.models import Booking  # noqa: F401
 from app.modules.api.v1.messaging.models import TripMessage  # noqa: F401
 from app.modules.api.v1.notifications.models import Notification  # noqa: F401

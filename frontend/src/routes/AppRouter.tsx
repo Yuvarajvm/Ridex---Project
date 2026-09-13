@@ -1,5 +1,6 @@
 import {
   BrowserRouter,
+  Navigate,
   Route,
   Routes,
 } from 'react-router-dom'
@@ -15,12 +16,31 @@ import { RideDetailsPage } from '../pages/RideDetailsPage'
 import { RidesPage } from '../pages/RidesPage'
 import { VehiclesPage } from '../pages/VehiclesPage'
 import { MyBookingsPage } from '../pages/MyBookingsPage'
-import { AdminDashboardPage } from '../pages/AdminDashboardPage'
+import { ResetPasswordPage } from '../pages/ResetPasswordPage'
+import {
+  AdminLayout,
+  AdminOverviewPage,
+  AdminVehiclesPage,
+  AdminUsersPage,
+  AdminRidesPage,
+  AdminReportsPage,
+} from '../pages/admin'
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Dedicated Admin Portal with Independent Layout */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="dashboard" element={<AdminOverviewPage />} />
+          <Route path="vehicles" element={<AdminVehiclesPage />} />
+          <Route path="users" element={<AdminUsersPage />} />
+          <Route path="rides" element={<AdminRidesPage />} />
+          <Route path="reports" element={<AdminReportsPage />} />
+        </Route>
+
+        {/* Public & Customer Platform with User AppShell */}
         <Route element={<AppShell />}>
           <Route
             path="/"
@@ -48,6 +68,11 @@ export function AppRouter() {
           />
 
           <Route
+            path="/reset-password"
+            element={<ResetPasswordPage />}
+          />
+
+          <Route
             path="/register"
             element={<RegisterPage />}
           />
@@ -65,11 +90,6 @@ export function AppRouter() {
           <Route
             path="/bookings"
             element={<MyBookingsPage />}
-          />
-
-          <Route
-            path="/admin"
-            element={<AdminDashboardPage />}
           />
 
           <Route

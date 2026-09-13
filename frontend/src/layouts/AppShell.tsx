@@ -1,7 +1,20 @@
 import { useState, useEffect, useRef } from 'react'
-import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import {
+  Bell,
+  Car,
+  CreditCard,
+  MessageSquare,
+  Star,
+  Shield,
+  LogOut,
+  ArrowRight,
+  ShieldCheck,
+  CheckCheck,
+} from 'lucide-react'
 import { useAuthStore } from '../stores/authStore'
 import { apiClient } from '../services/apiClient'
+import '../App.css'
 
 interface NotificationItem {
   id: string
@@ -29,12 +42,40 @@ function formatNotificationTime(value: string) {
   return new Intl.DateTimeFormat('en-IN', { month: 'short', day: 'numeric' }).format(new Date(value))
 }
 
-function getNotificationIcon(type: string) {
-  if (type.startsWith('booking_')) return '🚗'
-  if (type.startsWith('payment_')) return '💳'
-  if (type === 'trip_message') return '💬'
-  if (type.startsWith('review_')) return '★'
-  return '🔔'
+function renderNotificationIcon(type: string) {
+  if (type.startsWith('booking_')) {
+    return (
+      <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#ecfdf5', color: '#059669', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Car size={14} />
+      </div>
+    )
+  }
+  if (type.startsWith('payment_')) {
+    return (
+      <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#eff6ff', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <CreditCard size={14} />
+      </div>
+    )
+  }
+  if (type === 'trip_message') {
+    return (
+      <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#faf5ff', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <MessageSquare size={14} />
+      </div>
+    )
+  }
+  if (type.startsWith('review_')) {
+    return (
+      <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#fffbeb', color: '#d97706', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+        <Star size={14} />
+      </div>
+    )
+  }
+  return (
+    <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: '#f1f5f9', color: '#475569', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <Bell size={14} />
+    </div>
+  )
 }
 
 export default function AppShell() {
@@ -120,72 +161,66 @@ export default function AppShell() {
     }
   }
 
+  function getUserInitials(): string {
+    if (user?.profile?.first_name && user?.profile?.last_name) {
+      return `${user.profile.first_name[0]}${user.profile.last_name[0]}`.toUpperCase()
+    }
+    if (user?.profile?.first_name) {
+      return user.profile.first_name.slice(0, 2).toUpperCase()
+    }
+    return (user?.email || 'U').slice(0, 2).toUpperCase()
+  }
+
   return (
     <div className="ridex-app-shell">
       <header className="ridex-header">
         <div className="ridex-header-inner">
-          <Link
-            to="/"
-            className="ridex-logo"
-            aria-label="RIDEX home"
-          >
-            RID<span>EX</span>
+          <Link to="/" className="ridex-logo" aria-label="RIDEX home">
+            <div className="ridex-logo-badge">
+              <ShieldCheck size={16} color="#a9dfc6" />
+            </div>
+            <span>RIDEX</span>
           </Link>
 
           <nav className="ridex-nav">
-            <Link to="/">Find a ride</Link>
-            <Link to="/offer-ride">Offer a ride</Link>
-            {isAuthenticated && <Link to="/bookings">My Bookings</Link>}
-            {isAuthenticated && <Link to="/vehicles">My Vehicles</Link>}
+            <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Find a ride
+            </NavLink>
+            <NavLink to="/offer-ride" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Offer a ride
+            </NavLink>
+            {isAuthenticated && (
+              <NavLink to="/bookings" className={({ isActive }) => (isActive ? 'active' : '')}>
+                My Bookings
+              </NavLink>
+            )}
+            {isAuthenticated && (
+              <NavLink to="/vehicles" className={({ isActive }) => (isActive ? 'active' : '')}>
+                My Vehicles
+              </NavLink>
+            )}
             {isAuthenticated && user?.role === 'admin' && (
-              <Link to="/admin" style={{ color: '#a9dfc6', fontWeight: 800 }}>
-                Admin Panel
+              <Link to="/admin" className="ridex-admin-panel-link">
+                <Shield size={13} />
+                <span>Admin Portal</span>
               </Link>
             )}
-            <a href="/#how-it-works">How it works</a>
           </nav>
 
-          <div className="ridex-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div className="ridex-header-actions">
             {isAuthenticated && user ? (
               <>
-                {/* Notification Bell */}
+                {/* Notification Bell with Lucide SVG */}
                 <div style={{ position: 'relative' }} ref={notifRef}>
                   <button
                     type="button"
+                    className="ridex-notif-btn"
                     onClick={() => setIsNotifOpen((prev) => !prev)}
                     aria-label="Notifications"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.08)',
-                      border: '1px solid rgba(255, 255, 255, 0.15)',
-                      borderRadius: '50%',
-                      width: '38px',
-                      height: '38px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontSize: '16px',
-                      cursor: 'pointer',
-                      position: 'relative',
-                    }}
                   >
-                    🔔
+                    <Bell size={16} />
                     {unreadCount > 0 && (
-                      <span
-                        style={{
-                          position: 'absolute',
-                          top: '-4px',
-                          right: '-4px',
-                          background: '#e98570',
-                          color: '#fff',
-                          fontSize: '10px',
-                          fontWeight: 800,
-                          borderRadius: '10px',
-                          padding: '2px 5px',
-                          lineHeight: 1,
-                          border: '2px solid #26345f',
-                        }}
-                      >
+                      <span className="ridex-notif-badge">
                         {unreadCount > 9 ? '9+' : unreadCount}
                       </span>
                     )}
@@ -193,59 +228,31 @@ export default function AppShell() {
 
                   {/* Notification Dropdown */}
                   {isNotifOpen && (
-                    <div
-                      style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: '46px',
-                        width: '340px',
-                        maxHeight: '440px',
-                        background: '#fff',
-                        borderRadius: '16px',
-                        boxShadow: '0 16px 40px rgba(0, 0, 0, 0.22)',
-                        border: '1px solid #e0e2e7',
-                        overflow: 'hidden',
-                        zIndex: 9999,
-                        display: 'flex',
-                        flexDirection: 'column',
-                      }}
-                    >
-                      <div
-                        style={{
-                          padding: '14px 18px',
-                          borderBottom: '1px solid #f0f2f5',
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          background: '#fafbfc',
-                        }}
-                      >
-                        <strong style={{ fontSize: '14px', color: '#17203b', fontWeight: 800 }}>
+                    <div className="ridex-notif-dropdown">
+                      <div className="ridex-notif-head">
+                        <strong>
                           Notifications {unreadCount > 0 && `(${unreadCount})`}
                         </strong>
                         {unreadCount > 0 && (
                           <button
                             type="button"
+                            className="ridex-notif-clear-btn"
                             onClick={handleMarkAllRead}
-                            style={{
-                              background: 'transparent',
-                              border: 'none',
-                              color: '#26345f',
-                              fontSize: '12px',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                            }}
                           >
-                            Mark all read
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                              <CheckCheck size={13} />
+                              <span>Mark all read</span>
+                            </span>
                           </button>
                         )}
                       </div>
 
-                      <div style={{ overflowY: 'auto', flex: 1 }}>
+                      <div style={{ overflowY: 'auto', flex: 1, maxHeight: '360px' }}>
                         {notifications.length === 0 ? (
-                          <div style={{ padding: '32px 20px', textAlign: 'center', color: '#7c8495' }}>
-                            <p style={{ margin: 0, fontSize: '13px' }}>No notifications yet</p>
-                            <small style={{ fontSize: '11px' }}>We'll notify you about ride updates & chats</small>
+                          <div style={{ padding: '36px 20px', textAlign: 'center', color: '#64748b' }}>
+                            <Bell size={24} style={{ margin: '0 auto 8px', color: '#cbd5e1', display: 'block' }} />
+                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 600 }}>No notifications yet</p>
+                            <small style={{ fontSize: '11px', color: '#94a3b8' }}>We'll notify you about ride updates and bookings</small>
                           </div>
                         ) : (
                           notifications.map((n) => (
@@ -254,23 +261,23 @@ export default function AppShell() {
                               onClick={() => handleNotificationClick(n)}
                               style={{
                                 padding: '12px 16px',
-                                borderBottom: '1px solid #f5f6f8',
+                                borderBottom: '1px solid #f1f5f9',
                                 cursor: 'pointer',
-                                background: n.is_read ? '#fff' : '#f4f9f6',
+                                background: n.is_read ? '#ffffff' : '#f8fafc',
                                 display: 'flex',
                                 gap: '12px',
                                 alignItems: 'flex-start',
                                 transition: 'background 0.15s',
                               }}
                             >
-                              <span style={{ fontSize: '18px', lineHeight: 1.2 }}>{getNotificationIcon(n.type)}</span>
+                              {renderNotificationIcon(n.type)}
                               <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
                                   <span
                                     style={{
                                       fontSize: '13px',
-                                      fontWeight: n.is_read ? 600 : 800,
-                                      color: '#17203b',
+                                      fontWeight: n.is_read ? 600 : 700,
+                                      color: '#0f172a',
                                       whiteSpace: 'nowrap',
                                       overflow: 'hidden',
                                       textOverflow: 'ellipsis',
@@ -278,7 +285,7 @@ export default function AppShell() {
                                   >
                                     {n.title}
                                   </span>
-                                  <small style={{ fontSize: '10px', color: '#9ba2b0', marginLeft: '6px' }}>
+                                  <small style={{ fontSize: '10px', color: '#94a3b8', marginLeft: '6px' }}>
                                     {formatNotificationTime(n.created_at)}
                                   </small>
                                 </div>
@@ -286,7 +293,7 @@ export default function AppShell() {
                                   style={{
                                     margin: 0,
                                     fontSize: '12px',
-                                    color: '#555d6e',
+                                    color: '#64748b',
                                     lineHeight: '1.4',
                                     wordBreak: 'break-word',
                                   }}
@@ -297,10 +304,10 @@ export default function AppShell() {
                               {!n.is_read && (
                                 <span
                                   style={{
-                                    width: '7px',
-                                    height: '7px',
+                                    width: '6px',
+                                    height: '6px',
                                     borderRadius: '50%',
-                                    background: '#2d7a54',
+                                    background: '#059669',
                                     marginTop: '6px',
                                     flexShrink: 0,
                                   }}
@@ -315,33 +322,30 @@ export default function AppShell() {
                 </div>
 
                 <Link to="/profile" className="ridex-user-badge">
+                  <div className="ridex-user-avatar">{getUserInitials()}</div>
                   <span className="ridex-user-name">
                     {user.profile?.first_name || user.email.split('@')[0]}
                   </span>
                   <span className="ridex-role-tag">{user.role}</span>
                 </Link>
+
                 <button
                   type="button"
                   className="ridex-logout-btn"
                   onClick={handleLogout}
                 >
-                  Log out
+                  <LogOut size={13} />
+                  <span>Log out</span>
                 </button>
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="ridex-login-link"
-                >
+                <Link to="/login" className="ridex-login-link">
                   Log in
                 </Link>
-
-                <Link
-                  to="/register"
-                  className="ridex-get-started"
-                >
-                  Get started
+                <Link to="/register" className="ridex-get-started">
+                  <span>Get started</span>
+                  <ArrowRight size={13} />
                 </Link>
               </>
             )}

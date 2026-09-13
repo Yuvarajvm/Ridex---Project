@@ -45,10 +45,23 @@ class Settings(BaseSettings):
     )
 
     cors_origins: list[str] = Field(
-        default_factory=list,
+        default_factory=lambda: [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+        ],
     )
 
     storage_bucket: str | None = None
+
+    email_provider: Literal["console", "smtp"] = "console"
+    email_host: str = "localhost"
+    email_port: int = 587
+    email_username: str = ""
+    email_password: str = ""
+    email_from: str = "noreply@ridex.com"
+    email_use_tls: bool = True
 
     @property
     def is_production(self) -> bool:

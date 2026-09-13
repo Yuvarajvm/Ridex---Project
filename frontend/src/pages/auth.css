@@ -1,10 +1,14 @@
+/* =========================================================
+   RIDEX AUTHENTICATION STYLES (EXECUTIVE THEME)
+   ========================================================= */
+
 .ridex-auth-page {
-  min-height: calc(100vh - 72px);
-  background: #f5f2ea;
+  min-height: calc(100vh - 68px);
+  background: #f8fafc;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 48px 20px;
 }
 
 .ridex-auth-card {
@@ -12,9 +16,9 @@
   width: 100%;
   max-width: 440px;
   border-radius: 16px;
-  padding: 40px;
-  box-shadow: 0 12px 32px rgba(38, 52, 95, 0.08);
-  border: 1px solid rgba(38, 52, 95, 0.06);
+  padding: 36px 32px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
 }
 
 .ridex-auth-header {
@@ -23,36 +27,39 @@
 }
 
 .ridex-auth-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  background: rgba(169, 223, 198, 0.3);
-  color: #1c6c47;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(169, 223, 198, 0.2);
+  color: #059669;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   border-radius: 999px;
+  border: 1px solid rgba(169, 223, 198, 0.3);
   margin-bottom: 12px;
 }
 
 .ridex-auth-title {
-  font-size: 1.75rem;
+  font-size: 24px;
   font-weight: 800;
-  color: #26345f;
-  margin: 0 0 8px;
-  letter-spacing: -0.02em;
+  color: #0f172a;
+  margin: 0 0 6px;
+  letter-spacing: -0.03em;
 }
 
 .ridex-auth-subtitle {
-  color: #636b78;
-  font-size: 0.95rem;
+  color: #64748b;
+  font-size: 13.5px;
   margin: 0;
 }
 
 .ridex-auth-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 16px;
 }
 
 .ridex-form-group {
@@ -68,27 +75,46 @@
 }
 
 .ridex-form-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #26345f;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+}
+
+.ridex-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ridex-input-icon {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  pointer-events: none;
 }
 
 .ridex-form-input {
   width: 100%;
-  padding: 12px 14px;
-  border: 1.5px solid #d9dce3;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  color: #26345f;
-  background: #fdfdfc;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: #0f172a;
+  background: #ffffff;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-sizing: border-box;
 }
 
+.ridex-form-input.has-icon {
+  padding-left: 38px;
+}
+
 .ridex-form-input:focus {
   outline: none;
-  border-color: #26345f;
-  box-shadow: 0 0 0 3px rgba(38, 52, 95, 0.12);
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
 }
 
 .ridex-role-selector {
@@ -99,28 +125,33 @@
 
 .ridex-role-btn {
   padding: 12px;
-  border: 1.5px solid #d9dce3;
+  border: 1px solid #cbd5e1;
   border-radius: 10px;
   background: #ffffff;
-  color: #26345f;
+  color: #475569;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 13px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   transition: all 0.15s ease;
 }
 
+.ridex-role-btn:hover {
+  border-color: #94a3b8;
+  background: #f8fafc;
+}
+
 .ridex-role-btn.active {
-  border-color: #26345f;
-  background: #26345f;
+  border-color: #0f172a;
+  background: #0f172a;
   color: #ffffff;
 }
 
 .ridex-role-btn span.role-hint {
-  font-size: 0.75rem;
+  font-size: 11px;
   font-weight: 400;
   opacity: 0.8;
 }
@@ -129,27 +160,34 @@
   padding: 10px 14px;
   background: #fef2f2;
   border: 1px solid #fecaca;
-  color: #b91c1c;
+  color: #dc2626;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 13px;
   line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .ridex-auth-submit {
-  margin-top: 8px;
-  padding: 14px;
-  background: #e98570;
+  margin-top: 6px;
+  padding: 12px;
+  background: #0f172a;
   color: #ffffff;
   border: none;
-  border-radius: 10px;
-  font-size: 1rem;
+  border-radius: 8px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.15s ease;
 }
 
 .ridex-auth-submit:hover:not(:disabled) {
-  background: #d8735e;
+  background: #1e293b;
   transform: translateY(-1px);
 }
 
@@ -161,12 +199,12 @@
 .ridex-auth-footer {
   margin-top: 24px;
   text-align: center;
-  font-size: 0.875rem;
-  color: #636b78;
+  font-size: 13px;
+  color: #64748b;
 }
 
 .ridex-auth-footer a {
-  color: #26345f;
+  color: #0f172a;
   font-weight: 700;
   text-decoration: none;
   margin-left: 4px;

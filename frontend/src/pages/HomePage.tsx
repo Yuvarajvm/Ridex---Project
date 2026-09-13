@@ -8,6 +8,18 @@ import type {
   ReactNode,
 } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  ArrowRight,
+  ArrowLeftRight,
+  MapPin,
+  Calendar,
+  Navigation,
+  Users,
+  ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
+  X,
+} from 'lucide-react'
 
 import './index.css'
 
@@ -33,189 +45,6 @@ interface RideAvailabilityResponse {
     departure_at: string
   }>
   total?: number
-}
-
-function ArrowRightIcon() {
-  return (
-    <svg
-      width="17"
-      height="17"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M4 10H16M11 5L16 10L11 15"
-        stroke="currentColor"
-        strokeWidth="1.7"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function SwapIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M4 6H15M15 6L12 3M15 6L12 9M16 14H5M5 14L8 11M5 14L8 17"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
-function LocationIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M16 8.2C16 12.3 10 17 10 17S4 12.3 4 8.2C4 5.2 6.7 3 10 3C13.3 3 16 5.2 16 8.2Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <circle
-        cx="10"
-        cy="8"
-        r="2"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
-}
-
-function CalendarIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <rect
-        x="3"
-        y="4.5"
-        width="14"
-        height="13"
-        rx="2"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M6.5 2.5V6.5M13.5 2.5V6.5M3 8H17"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function RouteIcon() {
-  return (
-    <svg
-      width="21"
-      height="21"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle
-        cx="5"
-        cy="5"
-        r="2.4"
-        stroke="currentColor"
-        strokeWidth="1.4"
-      />
-      <circle
-        cx="15"
-        cy="15"
-        r="2.4"
-        stroke="currentColor"
-        strokeWidth="1.4"
-      />
-      <path
-        d="M7.5 5H11C13.2 5 14 6.2 14 8V12.5"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function UsersIcon() {
-  return (
-    <svg
-      width="21"
-      height="21"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <circle
-        cx="8"
-        cy="7"
-        r="3"
-        stroke="currentColor"
-        strokeWidth="1.4"
-      />
-      <path
-        d="M2.8 16C3.3 12.9 5 11.3 8 11.3C11 11.3 12.7 12.9 13.2 16"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      <path
-        d="M13 4.8C15 5 16.2 6.3 16.2 8C16.2 9.4 15.4 10.5 14.2 11"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function ShieldIcon() {
-  return (
-    <svg
-      width="21"
-      height="21"
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M10 2.5L16 5V9.5C16 13.3 13.5 16.8 10 18C6.5 16.8 4 13.3 4 9.5V5L10 2.5Z"
-        stroke="currentColor"
-        strokeWidth="1.4"
-      />
-      <path
-        d="M7.5 10L9.2 11.7L12.7 8.2"
-        stroke="currentColor"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
 }
 
 function formatDateKey(value: Date): string {
@@ -888,7 +717,7 @@ export function HomePage() {
             <div className="ridex-hero-links">
               <a href="#how-it-works">
                 See how RIDEX works
-                <ArrowRightIcon />
+                <ArrowRight size={15} />
               </a>
 
               <span className="ridex-hero-divider" />
@@ -937,7 +766,7 @@ export function HomePage() {
                     .filter(Boolean)
                     .join(' ')}
                 >
-                  <LocationIcon />
+                  <MapPin size={18} />
 
                   <input
                     id="ridex-origin"
@@ -985,7 +814,7 @@ export function HomePage() {
                               )
                             }
                           >
-                            <LocationIcon />
+                            <MapPin size={16} />
 
                             <span>
                               {location}
@@ -1009,7 +838,7 @@ export function HomePage() {
                   swapLocations
                 }
               >
-                <SwapIcon />
+                <ArrowLeftRight size={16} />
               </button>
 
               <div className="ridex-field-wrapper">
@@ -1028,7 +857,7 @@ export function HomePage() {
                     .filter(Boolean)
                     .join(' ')}
                 >
-                  <LocationIcon />
+                  <MapPin size={18} />
 
                   <input
                     id="ridex-destination"
@@ -1076,7 +905,7 @@ export function HomePage() {
                               )
                             }
                           >
-                            <LocationIcon />
+                            <MapPin size={16} />
 
                             <span>
                               {location}
@@ -1124,7 +953,7 @@ export function HomePage() {
                     )
                   }
                 >
-                  <CalendarIcon />
+                  <Calendar size={18} />
 
                   <span>
                     {date
@@ -1153,7 +982,7 @@ export function HomePage() {
                         }
                         aria-label="Close calendar"
                       >
-                        ×
+                        <X size={16} />
                       </button>
 
                       <div className="calendar-header">
@@ -1170,7 +999,7 @@ export function HomePage() {
                             )
                           }
                         >
-                          ‹
+                          <ChevronLeft size={16} />
                         </button>
 
                         <strong>
@@ -1189,7 +1018,7 @@ export function HomePage() {
                             )
                           }
                         >
-                          ›
+                          <ChevronRight size={16} />
                         </button>
                       </div>
 
@@ -1198,9 +1027,7 @@ export function HomePage() {
                           {origin}
                         </span>
 
-                        <span>
-                          →
-                        </span>
+                        <ArrowRight size={13} />
 
                         <span>
                           {destination}
@@ -1288,7 +1115,7 @@ export function HomePage() {
                 }
               >
                 Search rides
-                <ArrowRightIcon />
+                <ArrowRight size={15} />
               </button>
             </div>
 
@@ -1346,7 +1173,7 @@ export function HomePage() {
               </span>
 
               <div className="ridex-feature-icon">
-                <RouteIcon />
+                <Navigation size={22} />
               </div>
 
               <h3>
@@ -1365,7 +1192,7 @@ export function HomePage() {
               </span>
 
               <div className="ridex-feature-icon">
-                <UsersIcon />
+                <Users size={22} />
               </div>
 
               <h3>
@@ -1384,7 +1211,7 @@ export function HomePage() {
               </span>
 
               <div className="ridex-feature-icon">
-                <ShieldIcon />
+                <ShieldCheck size={22} />
               </div>
 
               <h3>
@@ -1425,7 +1252,7 @@ export function HomePage() {
           <div className="ridex-trust-items">
             <div className="ridex-trust-item">
               <div className="ridex-trust-icon">
-                <RouteIcon />
+                <Navigation size={22} />
               </div>
 
               <div>
@@ -1442,7 +1269,7 @@ export function HomePage() {
 
             <div className="ridex-trust-item">
               <div className="ridex-trust-icon">
-                <UsersIcon />
+                <Users size={22} />
               </div>
 
               <div>
@@ -1459,7 +1286,7 @@ export function HomePage() {
 
             <div className="ridex-trust-item">
               <div className="ridex-trust-icon">
-                <ShieldIcon />
+                <ShieldCheck size={22} />
               </div>
 
               <div>
@@ -1498,7 +1325,7 @@ export function HomePage() {
             href="/offer-ride"
           >
             Offer a ride
-            <ArrowRightIcon />
+            <ArrowRight size={15} />
           </a>
         </div>
       </section>

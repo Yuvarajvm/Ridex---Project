@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import {
+  Save,
+  ShieldCheck,
+  CheckCircle2,
+  AlertCircle,
+  Clock,
+} from 'lucide-react'
 import { apiClient } from '../services/apiClient'
 import { useAuthStore } from '../stores/authStore'
 import type { UserProfile } from '../stores/authStore'
@@ -38,10 +45,10 @@ export function ProfilePage() {
       return
     }
 
-    async function loadProfile() {
-      setIsLoading(true)
-      try {
-        const data = await apiClient<UserAccountResponse>('/users/me')
+    let isMounted = true
+    apiClient<UserAccountResponse>('/users/me')
+      .then((data) => {
+        if (!isMounted) return
         if (data.profile) {
           setFirstName(data.profile.first_name || '')
           setLastName(data.profile.last_name || '')
@@ -49,14 +56,18 @@ export function ProfilePage() {
           setCity(data.profile.city || '')
           setBio(data.profile.bio || '')
         }
-      } catch (err) {
+      })
+      .catch((err) => {
+        if (!isMounted) return
         setErrorMessage(err instanceof Error ? err.message : 'Could not load profile.')
-      } finally {
-        setIsLoading(false)
-      }
-    }
+      })
+      .finally(() => {
+        if (isMounted) setIsLoading(false)
+      })
 
-    void loadProfile()
+    return () => {
+      isMounted = false
+    }
   }, [isAuthenticated, navigate])
 
   async function handleSave(event: FormEvent<HTMLFormElement>) {
@@ -96,32 +107,90 @@ export function ProfilePage() {
     }
   }
 
+  const initials = (firstName ? firstName[0] : user?.email ? user.email[0] : 'U').toUpperCase()
+
   if (isLoading) {
     return (
-      <div className="ridex-auth-page">
-        <div className="ridex-auth-card" style={{ textAlign: 'center' }}>
-          <p>Loading profile...</p>
+      <div className="ridex-auth-page" style={{ padding: '60px 16px' }}>
+        <div className="ridex-auth-card" style={{ textAlign: 'center', padding: '48px' }}>
+          <Clock size={28} style={{ color: '#94a3b8', margin: '0 auto 12px' }} />
+          <p style={{ color: '#64748b', fontSize: '14px', margin: 0 }}>Loading profile details...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="ridex-auth-page">
-      <div className="ridex-auth-card" style={{ maxWidth: '560px' }}>
-        <div className="ridex-auth-header">
-          <span className="ridex-auth-badge">{user?.role?.toUpperCase()} ACCOUNT</span>
-          <h1 className="ridex-auth-title">Your Profile</h1>
-          <p className="ridex-auth-subtitle">Manage your personal mobility profile</p>
+    <div className="ridex-auth-page" style={{ padding: '40px 16px' }}>
+      <div className="ridex-auth-card" style={{ maxWidth: '580px', width: '100%' }}>
+        {/* Profile Avatar Header */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+          <div
+            style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #0b1324 0%, #0f172a 100%)',
+              color: '#a9dfc6',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 800,
+              fontSize: '22px',
+              boxShadow: '0 4px 12px rgba(11, 19, 36, 0.15)',
+              border: '2px solid #e2e8f0',
+              flexShrink: 0,
+            }}
+          >
+            {initials}
+          </div>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h1 style={{ fontSize: '22px', margin: 0, color: '#0f172a', fontWeight: 800 }}>
+                {displayName || `${firstName} ${lastName}`.trim() || 'My Account'}
+              </h1>
+              <span
+                style={{
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  padding: '2px 8px',
+                  borderRadius: '999px',
+                  background: '#ecfdf5',
+                  color: '#065f46',
+                  border: '1px solid #a7f3d0',
+                }}
+              >
+                {user?.role || 'Member'}
+              </span>
+            </div>
+            <p style={{ margin: '3px 0 0', color: '#64748b', fontSize: '13px' }}>
+              Manage your personal mobility profile and travel bio
+            </p>
+          </div>
         </div>
 
-        {errorMessage && <div className="ridex-auth-error">{errorMessage}</div>}
+        {errorMessage && (
+          <div className="ridex-auth-error" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AlertCircle size={16} />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
         {successMessage && (
           <div
             className="ridex-auth-error"
-            style={{ background: '#ecfdf5', borderColor: '#a7f3d0', color: '#065f46' }}
+            style={{
+              background: '#ecfdf5',
+              borderColor: '#a7f3d0',
+              color: '#065f46',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}
           >
-            {successMessage}
+            <CheckCircle2 size={16} />
+            <span>{successMessage}</span>
           </div>
         )}
 
@@ -196,7 +265,7 @@ export function ProfilePage() {
                 id="profileState"
                 type="text"
                 className="ridex-form-input"
-                placeholder="e.g. Telangana"
+                placeholder="e.g. Andhra Pradesh, Telangana"
                 value={state}
                 onChange={(e) => setState(e.target.value)}
                 disabled={isSaving}
@@ -212,7 +281,7 @@ export function ProfilePage() {
               id="profileBio"
               className="ridex-form-input"
               rows={3}
-              placeholder="Share travel preferences or daily commute details..."
+              placeholder="Share travel preferences or daily commute details with your community..."
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               disabled={isSaving}
@@ -220,13 +289,21 @@ export function ProfilePage() {
           </div>
 
           <div className="ridex-form-group">
-            <label className="ridex-form-label">Email address (Verified)</label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <label className="ridex-form-label" style={{ margin: 0 }}>
+                Email address
+              </label>
+              <span style={{ fontSize: '11px', color: '#059669', display: 'flex', alignItems: 'center', gap: '3px', fontWeight: 700 }}>
+                <ShieldCheck size={13} />
+                Verified
+              </span>
+            </div>
             <input
               type="text"
               className="ridex-form-input"
               value={user?.email || ''}
               disabled
-              style={{ background: '#f0f0ee', cursor: 'not-allowed' }}
+              style={{ background: '#f1f5f9', cursor: 'not-allowed', color: '#64748b' }}
             />
           </div>
 
@@ -234,8 +311,16 @@ export function ProfilePage() {
             type="submit"
             className="ridex-auth-submit"
             disabled={isSaving}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              marginTop: '8px',
+            }}
           >
-            {isSaving ? 'Saving changes...' : 'Save Profile'}
+            <Save size={16} />
+            <span>{isSaving ? 'Saving Changes...' : 'Save Profile'}</span>
           </button>
         </form>
       </div>

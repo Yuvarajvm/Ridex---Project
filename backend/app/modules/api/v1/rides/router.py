@@ -8,9 +8,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db_session
 from app.modules.api.v1.auth.dependencies import get_current_user
+from app.modules.api.v1.bookings.schemas import BookingListResponse, BookingResponse
+from app.modules.api.v1.bookings.service import BookingService
 from app.modules.api.v1.rides.schemas import (
     LocationSuggestion,
     RideAvailabilityResponse,
+    RideCancelRequest,
     RideCreate,
     RideListResponse,
     RideResponse,
@@ -70,6 +73,32 @@ async def update_ride_status(
         new_status=payload.status,
     )
     return RideResponse.model_validate(ride)
+
+
+@router.get(
+    "/my",
+    response_model=RideListResponse,
+)
+async def list_my_offered_rides(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db_session),
+) -> RideListResponse:
+    """Return paginated list of rides offered/published by the authenticated driver."""
+    service = RideService(session)
+    rides, total = await service.list_my_offered_rides(
+        driver_id=current_user.id,
+        page=page,
+        page_size=page_size,
+    )
+    return RideListResponse(
+        items=[RideResponse.model_validate(r) for r in rides],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
+
 
 
 @router.get(
@@ -295,3 +324,50 @@ async def get_ride(
         )
 
     return RideResponse.model_validate(ride)
+
+
+@router.post(
+    "/{ride_id}/cancel",
+    response_model=RideResponse,
+)
+async def cancel_ride(
+    ride_id: UUID,
+    payload: RideCancelRequest | None = None,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db_session),
+) -> RideResponse:
+    """Cancel an offered ride (as the host driver), releasing held bookings and alerting riders."""
+    service = RideService(session)
+    ride = await service.cancel_ride_as_driver(
+        ride_id=ride_id,
+        driver_id=current_user.id,
+        reason=payload.reason if payload else None,
+    )
+    return RideResponse.model_validate(ride)
+
+
+@router.get(
+    "/{ride_id}/bookings",
+    response_model=BookingListResponse,
+)
+async def list_ride_bookings(
+    ride_id: UUID,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=50, ge=1, le=100),
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_db_session),
+) -> BookingListResponse:
+    """Return passenger bookings for an offered ride (accessible by the host driver)."""
+    booking_service = BookingService(session)
+    bookings, total = await booking_service.list_ride_bookings(
+        ride_id=ride_id,
+        driver_id=current_user.id,
+        page=page,
+        page_size=page_size,
+    )
+    return BookingListResponse(
+        items=[BookingResponse.model_validate(b) for b in bookings],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )

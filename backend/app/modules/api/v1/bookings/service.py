@@ -6,6 +6,7 @@ from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.core.exceptions import (
     AuthorizationError,
@@ -17,6 +18,7 @@ from app.modules.api.v1.bookings.repository import BookingRepository
 from app.modules.api.v1.bookings.schemas import BookingCreate
 from app.modules.api.v1.notifications.models import Notification
 from app.modules.api.v1.rides.models import Ride
+from app.modules.api.v1.users.models import User
 
 
 VALID_BOOKING_TRANSITIONS: dict[str, set[str]] = {
@@ -76,14 +78,33 @@ class BookingService:
         if existing is not None:
             raise ConflictError("You already have an active booking for this ride.")
 
-        # 3. Check seat capacity
+        # 3. Women-only ride: verify rider has female profile
+        if ride.is_women_only:
+            rider_stmt = (
+                select(User)
+                .options(joinedload(User.profile))
+                .where(User.id == rider_id)
+            )
+            rider_result = await self.session.execute(rider_stmt)
+            rider_user = rider_result.scalar_one_or_none()
+            if (
+                rider_user is None
+                or rider_user.profile is None
+                or rider_user.profile.gender != "female"
+            ):
+                raise AuthorizationError(
+                    "This is a Women-Only ride. Only passengers with a verified "
+                    "female profile may book seats."
+                )
+
+        # 4. Check seat capacity
         if ride.available_seats < payload.seats_booked:
             raise ConflictError(
                 f"Requested {payload.seats_booked} seat(s), but only "
                 f"{ride.available_seats} seat(s) remain available."
             )
 
-        # 4. Atomically deduct available seats and create booking
+        # 5. Atomically deduct available seats and create booking
         ride.available_seats -= payload.seats_booked
         total_fare = Decimal(str(ride.price_per_seat)) * Decimal(str(payload.seats_booked))
 

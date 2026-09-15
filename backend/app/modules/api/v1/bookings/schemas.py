@@ -39,6 +39,8 @@ class RiderSummaryForBooking(BaseModel):
 
     id: UUID
     full_name: str | None = None
+    email: str | None = None
+    phone_number: str | None = None
     avatar_url: str | None = None
 
 

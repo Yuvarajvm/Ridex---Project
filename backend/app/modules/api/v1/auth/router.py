@@ -9,8 +9,11 @@ from app.core.database import get_db_session
 from app.modules.api.v1.auth.dependencies import get_current_user
 from app.modules.api.v1.auth.schemas import (
     AuthUserResponse,
+    ForgotPasswordRequest,
     LoginRequest,
+    MessageResponse,
     RegisterRequest,
+    ResetPasswordRequest,
     TokenResponse,
 )
 from app.modules.api.v1.auth.service import AuthService
@@ -75,3 +78,42 @@ async def get_me(
 ) -> AuthUserResponse:
     """Return the profile and account details of the authenticated caller."""
     return AuthUserResponse.model_validate(current_user)
+
+
+@router.post(
+    "/forgot-password",
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Request a password reset email",
+)
+async def forgot_password(
+    payload: ForgotPasswordRequest,
+    session: AsyncSession = Depends(get_db_session),
+) -> MessageResponse:
+    """
+    Initiate the password reset flow.
+
+    Always returns 200 OK regardless of whether the email exists,
+    to prevent email enumeration attacks.
+    """
+    service = AuthService(session)
+    await service.forgot_password(payload.email)
+    return MessageResponse(
+        message="If an account with this email exists, a password reset link has been sent."
+    )
+
+
+@router.post(
+    "/reset-password",
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Reset password using token from email",
+)
+async def reset_password(
+    payload: ResetPasswordRequest,
+    session: AsyncSession = Depends(get_db_session),
+) -> MessageResponse:
+    """Complete the password reset flow using a valid, unexpired token."""
+    service = AuthService(session)
+    await service.reset_password(payload.token, payload.new_password)
+    return MessageResponse(message="Your password has been reset successfully.")

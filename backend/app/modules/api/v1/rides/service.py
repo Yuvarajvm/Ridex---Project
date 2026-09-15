@@ -3,12 +3,17 @@
 from datetime import datetime, timezone
 from uuid import UUID
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app.core.exceptions import AuthorizationError, ConflictError, NotFoundError
+from app.modules.api.v1.bookings.models import Booking
+from app.modules.api.v1.notifications.models import Notification
 from app.modules.api.v1.rides.models import Ride
 from app.modules.api.v1.rides.repository import RideRepository
 from app.modules.api.v1.rides.schemas import RideCreate
+from app.modules.api.v1.users.models import User
 from app.modules.api.v1.vehicles.repository import VehicleRepository
 
 
@@ -55,6 +60,25 @@ class RideService:
                 f"vehicle capacity ({vehicle.seat_capacity})."
             )
 
+        # Women-only ride: verify the driver has a female profile
+        if payload.is_women_only:
+            driver_stmt = (
+                select(User)
+                .options(joinedload(User.profile))
+                .where(User.id == driver_id)
+            )
+            driver_result = await self.session.execute(driver_stmt)
+            driver_user = driver_result.scalar_one_or_none()
+            if (
+                driver_user is None
+                or driver_user.profile is None
+                or driver_user.profile.gender != "female"
+            ):
+                raise ConflictError(
+                    "Only verified female drivers can publish women-only rides. "
+                    "Please update your profile gender first."
+                )
+
         ride = Ride(
             driver_id=driver_id,
             vehicle_id=payload.vehicle_id,
@@ -63,6 +87,7 @@ class RideService:
             departure_at=payload.departure_at,
             available_seats=payload.available_seats,
             price_per_seat=payload.price_per_seat,
+            is_women_only=payload.is_women_only,
             notes=payload.notes.strip() if payload.notes else None,
         )
 
@@ -151,6 +176,7 @@ class RideService:
         ride_id: UUID,
         driver_id: UUID,
         new_status: str,
+        reason: str | None = None,
     ) -> Ride:
         """Update ride status following strict state transition rules."""
         ride = await self.repository.get_by_id(ride_id)
@@ -173,7 +199,68 @@ class RideService:
             )
 
         ride.status = new_status
+
+        if new_status == "cancelled":
+            # Cancel all active bookings and notify riders
+            booking_stmt = (
+                select(Booking)
+                .where(
+                    Booking.ride_id == ride.id,
+                    Booking.status.in_(["requested", "confirmed"]),
+                    Booking.deleted_at.is_(None),
+                )
+            )
+            bookings_res = await self.session.execute(booking_stmt)
+            active_bookings = list(bookings_res.scalars().all())
+
+            cancel_reason_text = (
+                reason.strip() if reason and reason.strip() else "Ride was cancelled by the driver"
+            )
+            for b in active_bookings:
+                b.status = "cancelled"
+                b.cancellation_reason = cancel_reason_text
+                ride.available_seats += b.seats_booked
+
+                # Dispatch notification to passenger
+                notif = Notification(
+                    user_id=b.rider_id,
+                    type="booking_cancelled",
+                    title="Ride Cancelled by Driver",
+                    message=f"The driver has cancelled the trip from {ride.origin} to {ride.destination}. Reason: {cancel_reason_text}",
+                    data={"ride_id": str(ride.id), "booking_id": str(b.id)},
+                    is_read=False,
+                )
+                self.session.add(notif)
+
         await self.session.commit()
         await self.session.refresh(ride)
         loaded = await self.repository.get_by_id(ride.id)
         return loaded or ride
+
+    async def cancel_ride_as_driver(
+        self,
+        ride_id: UUID,
+        driver_id: UUID,
+        reason: str | None = None,
+    ) -> Ride:
+        """Cancel a ride as the host driver, cancelling active passenger reservations."""
+        return await self.update_ride_status(
+            ride_id=ride_id,
+            driver_id=driver_id,
+            new_status="cancelled",
+            reason=reason,
+        )
+
+    async def list_my_offered_rides(
+        self,
+        driver_id: UUID,
+        *,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> tuple[list[Ride], int]:
+        """Return paginated list of rides offered/published by the authenticated driver."""
+        return await self.repository.list_by_driver(
+            driver_id=driver_id,
+            page=page,
+            page_size=page_size,
+        )

@@ -16,6 +16,7 @@ class RideCreate(BaseModel):
     departure_at: datetime
     available_seats: int = Field(ge=1, le=8)
     price_per_seat: Decimal = Field(ge=Decimal("10.00"))
+    is_women_only: bool = False
     notes: str | None = Field(default=None, max_length=2000)
 
 
@@ -62,6 +63,7 @@ class RideResponse(BaseModel):
     departure_at: datetime
     available_seats: int
     price_per_seat: Decimal
+    is_women_only: bool = False
     status: str
     notes: str | None
     created_at: datetime
@@ -92,3 +94,9 @@ class RideAvailabilityResponse(BaseModel):
     destination: str
     month: str
     dates: list[date]
+
+
+class RideCancelRequest(BaseModel):
+    """Payload for cancelling an offered ride."""
+
+    reason: str | None = Field(default=None, max_length=500)

@@ -1,5 +1,5 @@
 /* =========================================================
-   RIDEX — GLOBAL FOUNDATION
+   RIDEX — GLOBAL FOUNDATION (EXECUTIVE THEME)
    ========================================================= */
 
 :root {
@@ -12,8 +12,8 @@
     "Segoe UI",
     sans-serif;
 
-  color: #172033;
-  background: #f5f2ea;
+  color: #0f172a;
+  background: #f8fafc;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -38,7 +38,7 @@ body,
 
 body {
   min-height: 100vh;
-  background: #f5f2ea;
+  background: #f8fafc;
 }
 
 *,
@@ -69,20 +69,20 @@ a {
    ========================================================= */
 
 .ridex-home-page {
-  --ridex-ink: #172033;
-  --ridex-ink-soft: #526075;
-  --ridex-cream: #f5f2ea;
-  --ridex-paper: #fbfaf7;
+  --ridex-ink: #0f172a;
+  --ridex-ink-soft: #64748b;
+  --ridex-cream: #f8fafc;
+  --ridex-paper: #ffffff;
 
-  --ridex-indigo: #26345f;
-  --ridex-indigo-dark: #1c2748;
+  --ridex-indigo: #0b1324;
+  --ridex-indigo-dark: #070c18;
 
   --ridex-mint: #a9dfc6;
-  --ridex-mint-dark: #5ba982;
+  --ridex-mint-dark: #059669;
 
-  --ridex-coral: #e98570;
+  --ridex-coral: #059669;
 
-  --ridex-line: rgba(23, 32, 51, 0.12);
+  --ridex-line: #e2e8f0;
 
   min-height: 100vh;
 
@@ -103,22 +103,18 @@ a {
 .ridex-hero {
   position: relative;
 
-  min-height: 760px;
+  min-height: 720px;
 
   overflow: visible;
 
   background:
-    radial-gradient(
-      circle at 82% 16%,
-      rgba(169, 223, 198, 0.34),
-      transparent 26%
-    ),
     linear-gradient(
       135deg,
-      #26345f 0%,
-      #202d54 55%,
-      #1c2748 100%
+      #0b1324 0%,
+      #0f172a 100%
     );
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
   color: #fff;
 }

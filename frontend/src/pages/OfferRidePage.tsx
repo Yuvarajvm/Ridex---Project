@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import {
+  ArrowLeft,
+  ArrowRight,
+  ArrowLeftRight,
+  Car,
+  Sparkles,
+  Clock,
+  AlertCircle,
+} from 'lucide-react'
 import { useAuthStore } from '../stores/authStore'
 import { apiClient } from '../services/apiClient'
 import type { Ride } from '../features/rides/types'
@@ -42,7 +51,7 @@ export function OfferRidePage() {
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [selectedVehicleId, setSelectedVehicleId] = useState('')
-  const [isLoadingVehicles, setIsLoadingVehicles] = useState(false)
+  const [isLoadingVehicles, setIsLoadingVehicles] = useState(isAuthenticated)
 
   const [origin, setOrigin] = useState('')
   const [destination, setDestination] = useState('')
@@ -51,6 +60,7 @@ export function OfferRidePage() {
   const [availableSeats, setAvailableSeats] = useState('3')
   const [pricePerSeat, setPricePerSeat] = useState('')
   const [notes, setNotes] = useState('')
+  const [isWomenOnly, setIsWomenOnly] = useState(false)
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -58,10 +68,10 @@ export function OfferRidePage() {
   useEffect(() => {
     if (!isAuthenticated) return
 
-    async function loadVehicles() {
-      try {
-        setIsLoadingVehicles(true)
-        const response = await apiClient.get<VehicleListResponse>('/vehicles')
+    let isMounted = true
+    apiClient.get<VehicleListResponse>('/vehicles')
+      .then((response) => {
+        if (!isMounted) return
         const items = response.items || []
         setVehicles(items)
         if (items.length > 0) {
@@ -70,14 +80,17 @@ export function OfferRidePage() {
             setAvailableSeats(String(items[0].seat_capacity))
           }
         }
-      } catch (error) {
+      })
+      .catch((error) => {
         console.error('Failed to load vehicles', error)
-      } finally {
-        setIsLoadingVehicles(false)
-      }
-    }
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingVehicles(false)
+      })
 
-    loadVehicles()
+    return () => {
+      isMounted = false
+    }
   }, [isAuthenticated])
 
   const selectedVehicle = vehicles.find((v) => v.id === selectedVehicleId)
@@ -147,6 +160,7 @@ export function OfferRidePage() {
         departure_at: departureAt.toISOString(),
         available_seats: Number(availableSeats),
         price_per_seat: Number(pricePerSeat),
+        is_women_only: isWomenOnly,
         notes: notes.trim() || null,
       })
 
@@ -165,18 +179,18 @@ export function OfferRidePage() {
       <section className="offer-ride-hero">
         <div className="offer-ride-hero-inner">
           <Link to="/" className="offer-back-link">
-            <span aria-hidden="true">←</span>
-            Back to home
+            <ArrowLeft size={16} />
+            <span>Back to home</span>
           </Link>
 
           <div className="offer-hero-copy">
-            <span className="offer-eyebrow">OFFER A RIDE</span>
+            <span className="offer-eyebrow">PUBLISH RIDE</span>
             <h1>
               You are going
               <span> somewhere.</span>
             </h1>
             <p>
-              Share your journey, fill empty seats, and help someone get there comfortably.
+              Share your journey, fill empty seats, and travel comfortably together.
             </p>
           </div>
         </div>
@@ -186,9 +200,9 @@ export function OfferRidePage() {
         {!isAuthenticated ? (
           <section className="offer-form-card" style={{ textAlign: 'center', padding: '48px 32px' }}>
             <span className="offer-section-label">AUTHENTICATION REQUIRED</span>
-            <h2 style={{ marginTop: '12px', fontSize: '26px' }}>Sign in to publish a ride</h2>
-            <p style={{ color: '#7c8495', maxWidth: '480px', margin: '12px auto 28px', lineHeight: '1.6' }}>
-              RIDEX maintains a community of verified drivers. Please sign in with your account or register to offer rides.
+            <h2 style={{ marginTop: '12px', fontSize: '24px', fontWeight: 800 }}>Sign in to publish a ride</h2>
+            <p style={{ color: '#64748b', maxWidth: '480px', margin: '12px auto 28px', lineHeight: '1.6', fontSize: '14.5px' }}>
+              RIDEX maintains a verified mobility network. Please sign in with your account or register to offer rides.
             </p>
             <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
               <Link
@@ -196,7 +210,8 @@ export function OfferRidePage() {
                 className="offer-submit-button"
                 style={{ textDecoration: 'none', minWidth: '150px' }}
               >
-                Sign In
+                <span>Sign In</span>
+                <ArrowRight size={16} />
               </Link>
               <Link
                 to="/register"
@@ -205,8 +220,8 @@ export function OfferRidePage() {
                   textDecoration: 'none',
                   minWidth: '150px',
                   background: 'transparent',
-                  color: '#26345f',
-                  border: '1.5px solid #26345f',
+                  color: '#0f172a',
+                  border: '1.5px solid #cbd5e1',
                 }}
               >
                 Register
@@ -215,14 +230,16 @@ export function OfferRidePage() {
           </section>
         ) : isLoadingVehicles ? (
           <section className="offer-form-card" style={{ textAlign: 'center', padding: '48px 32px' }}>
-            <p style={{ color: '#7c8495' }}>Loading your fleet information...</p>
+            <Clock size={28} style={{ margin: '0 auto 12px', color: '#94a3b8' }} />
+            <p style={{ color: '#64748b', fontSize: '14px' }}>Loading your fleet information...</p>
           </section>
         ) : vehicles.length === 0 ? (
           <section className="offer-form-card" style={{ textAlign: 'center', padding: '48px 32px' }}>
+            <Car size={36} style={{ margin: '0 auto 12px', color: '#94a3b8' }} />
             <span className="offer-section-label">VEHICLE REQUIRED</span>
-            <h2 style={{ marginTop: '12px', fontSize: '26px' }}>Register a vehicle first</h2>
-            <p style={{ color: '#7c8495', maxWidth: '480px', margin: '12px auto 28px', lineHeight: '1.6' }}>
-              To offer a ride on RIDEX, you must have at least one active vehicle registered under your account.
+            <h2 style={{ marginTop: '12px', fontSize: '24px', fontWeight: 800 }}>Register a vehicle first</h2>
+            <p style={{ color: '#64748b', maxWidth: '480px', margin: '12px auto 28px', lineHeight: '1.6', fontSize: '14.5px' }}>
+              To offer a ride on RIDEX, you must have at least one active vehicle registered under your driver account.
             </p>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <Link
@@ -230,7 +247,8 @@ export function OfferRidePage() {
                 className="offer-submit-button"
                 style={{ textDecoration: 'none', minWidth: '180px' }}
               >
-                Go to My Vehicles →
+                <span>Go to My Vehicles</span>
+                <ArrowRight size={16} />
               </Link>
             </div>
           </section>
@@ -242,7 +260,7 @@ export function OfferRidePage() {
                 <h2>Plan your ride</h2>
                 <p>Tell passengers where, when, and in which car you are travelling.</p>
               </div>
-              <span className="offer-step">01 / 01</span>
+              <span className="offer-step">Step 1 of 1</span>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -280,8 +298,9 @@ export function OfferRidePage() {
                   className="offer-swap-button"
                   onClick={handleSwapLocations}
                   aria-label="Swap locations"
+                  title="Swap locations"
                 >
-                  ⇄
+                  <ArrowLeftRight size={16} />
                 </button>
 
                 <label className="offer-field">
@@ -368,9 +387,77 @@ export function OfferRidePage() {
                 />
               </label>
 
+              {/* Women-Only Ride Feature Toggle */}
+              <div
+                style={{
+                  background: isWomenOnly ? '#faf5ff' : '#f8fafc',
+                  border: `1.5px solid ${isWomenOnly ? '#c084fc' : '#e2e8f0'}`,
+                  borderRadius: '14px',
+                  padding: '16px 20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: '16px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  marginTop: '16px',
+                }}
+                onClick={() => setIsWomenOnly(!isWomenOnly)}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <div
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '10px',
+                      background: isWomenOnly ? '#f3e8ff' : '#f1f5f9',
+                      color: isWomenOnly ? '#9333ea' : '#64748b',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Sparkles size={20} />
+                  </div>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <strong style={{ fontSize: '14px', color: '#0f172a' }}>
+                        Women-Only Ride
+                      </strong>
+                      <span
+                        style={{
+                          fontSize: '10px',
+                          fontWeight: 800,
+                          padding: '2px 8px',
+                          borderRadius: '999px',
+                          background: isWomenOnly ? '#9333ea' : '#64748b',
+                          color: '#ffffff',
+                          textTransform: 'uppercase',
+                        }}
+                      >
+                        {isWomenOnly ? 'Enabled' : 'Off'}
+                      </span>
+                    </div>
+                    <p style={{ margin: '2px 0 0', fontSize: '12.5px', color: '#64748b' }}>
+                      Only verified female passengers may book seats on this trip.
+                    </p>
+                  </div>
+                </div>
+
+                <input
+                  type="checkbox"
+                  checked={isWomenOnly}
+                  onChange={(e) => setIsWomenOnly(e.target.checked)}
+                  style={{ width: '18px', height: '18px', accentColor: '#9333ea', cursor: 'pointer' }}
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+
               {errorMessage && (
-                <div className="offer-error" role="alert">
-                  {errorMessage}
+                <div className="offer-error" role="alert" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <AlertCircle size={16} />
+                  <span>{errorMessage}</span>
                 </div>
               )}
 
@@ -385,8 +472,8 @@ export function OfferRidePage() {
                   className="offer-submit-button"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Publishing ride...' : 'Offer this ride'}
-                  <span aria-hidden="true">→</span>
+                  <span>{isSubmitting ? 'Publishing ride...' : 'Publish Ride'}</span>
+                  <ArrowRight size={16} />
                 </button>
               </div>
             </form>
@@ -394,7 +481,7 @@ export function OfferRidePage() {
         )}
 
         <aside className="offer-side-card">
-          <span className="offer-section-label">RIDE SMART</span>
+          <span className="offer-section-label">COMMUNITY STANDARDS</span>
           <h2>
             Make every
             <br />
@@ -404,15 +491,15 @@ export function OfferRidePage() {
           <div className="offer-side-list">
             <div>
               <span>01</span>
-              <p>Set a clear, accessible pickup location.</p>
+              <p>Set a clear, accessible pickup point along your route.</p>
             </div>
             <div>
               <span>02</span>
-              <p>Choose a realistic departure time with buffer.</p>
+              <p>Choose a realistic departure time with sufficient buffer.</p>
             </div>
             <div>
               <span>03</span>
-              <p>Keep your passengers informed through notes.</p>
+              <p>Keep passengers updated through co-traveler chat.</p>
             </div>
           </div>
         </aside>

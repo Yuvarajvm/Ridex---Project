@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     DateTime,
     ForeignKey,
@@ -78,6 +79,7 @@ class Ride(UUIDPrimaryKeyMixin, TimestampMixin, Base):
             "destination",
             "departure_at",
         ),
+        Index("ix_rides_is_women_only", "is_women_only"),
     )
 
     driver_id: Mapped[UUID] = mapped_column(
@@ -120,6 +122,13 @@ class Ride(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         nullable=False,
         default="scheduled",
         server_default="scheduled",
+    )
+
+    is_women_only: Mapped[bool] = mapped_column(
+        Boolean,
+        nullable=False,
+        default=False,
+        server_default="false",
     )
 
     notes: Mapped[str | None] = mapped_column(

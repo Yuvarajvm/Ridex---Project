@@ -165,3 +165,37 @@ class RideRepository:
         result = await self.session.execute(query)
 
         return list(result.scalars().all())
+
+    async def list_by_driver(
+        self,
+        driver_id: UUID,
+        *,
+        page: int = 1,
+        page_size: int = 20,
+    ) -> tuple[list[Ride], int]:
+        """Return paginated list of rides offered by a specific driver, newest first."""
+        offset = (page - 1) * page_size
+        query = (
+            select(Ride)
+            .options(
+                joinedload(Ride.driver).joinedload(User.profile),
+                joinedload(Ride.vehicle),
+            )
+            .where(
+                Ride.driver_id == driver_id,
+                Ride.deleted_at.is_(None),
+            )
+            .order_by(Ride.departure_at.desc())
+            .offset(offset)
+            .limit(page_size)
+        )
+        count_query = (
+            select(func.count(Ride.id))
+            .where(
+                Ride.driver_id == driver_id,
+                Ride.deleted_at.is_(None),
+            )
+        )
+        result = await self.session.execute(query)
+        count_result = await self.session.execute(count_query)
+        return list(result.scalars().unique().all()), count_result.scalar_one()

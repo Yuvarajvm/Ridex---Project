@@ -34,7 +34,18 @@ class PaymentService:
         self.session = session
         self.repository = PaymentRepository(session)
         self.booking_repository = BookingRepository(session)
-        self.provider = provider or MockPaymentProvider()
+        if provider:
+            self.provider = provider
+        else:
+            import os
+            from app.core.config import get_settings
+            settings = get_settings()
+            provider_type = os.environ.get("RIDEX_PAYMENT_PROVIDER", "development").lower()
+            if provider_type == "production" or settings.is_production:
+                from app.modules.api.v1.payments.providers.production_provider import ProductionPaymentProvider
+                self.provider = ProductionPaymentProvider()
+            else:
+                self.provider = MockPaymentProvider()
 
     async def create_payment_intent(
         self,

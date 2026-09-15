@@ -23,6 +23,7 @@ export interface Ride {
   departure_at: string
   available_seats: number
   price_per_seat: string | number
+  is_women_only?: boolean
   status: string
   notes: string | null
   created_at: string

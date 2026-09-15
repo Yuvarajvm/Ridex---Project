@@ -71,3 +71,27 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     expires_in: int
     user: AuthUserResponse
+
+
+class ForgotPasswordRequest(BaseModel):
+    """Request payload for initiating password reset."""
+
+    email: str = Field(
+        min_length=3,
+        max_length=320,
+        pattern=EMAIL_PATTERN,
+        description="Email address associated with the account",
+    )
+
+
+class ResetPasswordRequest(BaseModel):
+    """Request payload for completing password reset."""
+
+    token: str = Field(min_length=1, description="Reset token from email")
+    new_password: str = Field(min_length=8, max_length=128)
+
+
+class MessageResponse(BaseModel):
+    """Generic API message response."""
+
+    message: str

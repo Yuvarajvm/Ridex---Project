@@ -2,6 +2,17 @@ import {
   Link,
   useSearchParams,
 } from 'react-router-dom'
+import {
+  ArrowRight,
+  ArrowLeft,
+  ShieldCheck,
+  Sparkles,
+  Users,
+  Car,
+  User,
+  Navigation,
+  TrendingUp,
+} from 'lucide-react'
 
 import { useSearchRides } from '../features/rides/hooks/useSearchRides'
 import type { Ride } from '../features/rides/types'
@@ -62,23 +73,50 @@ function RideCard({ ride }: { ride: Ride }) {
           className="ride-view-button"
           to={`/rides/${ride.id}`}
         >
-          View ride
-          <span aria-hidden="true">→</span>
+          <span>View ride</span>
+          <ArrowRight size={15} />
         </Link>
       </div>
 
       <div className="ride-meta">
+        {ride.is_women_only && (
+          <span
+            style={{
+              padding: '3px 10px',
+              borderRadius: '999px',
+              fontSize: '11px',
+              fontWeight: 800,
+              background: '#faf5ff',
+              color: '#9333ea',
+              border: '1px solid #e9d5ff',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <Sparkles size={12} />
+            <span>Women Only</span>
+          </span>
+        )}
+
         <span>
-          <b>{ride.available_seats}</b> seats available
+          <Users size={13} style={{ color: '#64748b' }} />
+          <span><b>{ride.available_seats}</b> seats available</span>
         </span>
 
-        <span>{ride.vehicle ? `${ride.vehicle.make} ${ride.vehicle.model}` : 'Car'}</span>
+        <span>
+          <Car size={13} style={{ color: '#64748b' }} />
+          <span>{ride.vehicle ? `${ride.vehicle.make} ${ride.vehicle.model}` : 'Car'}</span>
+        </span>
 
-        <span>{ride.driver?.full_name || 'Driver'}</span>
+        <span>
+          <User size={13} style={{ color: '#64748b' }} />
+          <span>{ride.driver?.full_name || 'Driver'}</span>
+        </span>
 
         <span className="ride-verified">
-          <span className="verified-mark">✓</span>
-          Verified ride
+          <ShieldCheck size={14} style={{ color: '#059669' }} />
+          <span>Verified ride</span>
         </span>
       </div>
     </article>
@@ -94,16 +132,18 @@ function EmptyState({
 }) {
   return (
     <div className="ride-empty-state">
-      <div className="empty-icon">—</div>
+      <div className="empty-icon">
+        <Navigation size={22} />
+      </div>
       <h2>No rides found</h2>
       <p>
-        We could not find a ride from {origin} to {destination}{' '}
-        for this date.
+        We could not find a scheduled ride from {origin || 'origin'} to {destination || 'destination'}{' '}
+        for this date. Try another date or publish an offer.
       </p>
 
       <Link className="empty-action" to="/">
-        Search another date
-        <span aria-hidden="true">→</span>
+        <span>Search another date</span>
+        <ArrowRight size={15} />
       </Link>
     </div>
   )
@@ -147,7 +187,7 @@ export function RidesPage() {
       <section className="rides-hero">
         <div className="rides-hero-inner">
           <div>
-            <p className="rides-eyebrow">RIDE RESULTS</p>
+            <p className="rides-eyebrow">MARKETPLACE RESULTS</p>
 
             <h1>
               {origin || 'Any location'}
@@ -162,8 +202,8 @@ export function RidesPage() {
           </div>
 
           <Link className="modify-search-button" to="/">
-            <span aria-hidden="true">←</span>
-            Modify search
+            <ArrowLeft size={15} />
+            <span>Modify search</span>
           </Link>
         </div>
       </section>
@@ -172,11 +212,11 @@ export function RidesPage() {
         <aside className="rides-filters">
           <div className="filter-heading">
             <h2>Filters</h2>
-            <p>Refine your results</p>
+            <p>Refine your trip results</p>
           </div>
 
           <div className="filter-group">
-            <h3>Time</h3>
+            <h3>Time of departure</h3>
 
             <label>
               <input type="checkbox" />
@@ -220,7 +260,7 @@ export function RidesPage() {
           </div>
 
           <div className="filter-group">
-            <h3>Seats</h3>
+            <h3>Seats needed</h3>
 
             <label>
               <input type="checkbox" />
@@ -242,7 +282,7 @@ export function RidesPage() {
             type="button"
             className="apply-filter-button"
           >
-            Apply filters
+            Apply Filters
           </button>
         </aside>
 
@@ -250,11 +290,11 @@ export function RidesPage() {
           <div className="results-toolbar">
             <span>
               {isLoading
-                ? 'Finding rides...'
+                ? 'Finding available rides...'
                 : `${resultCount} ${
                     resultCount === 1
-                      ? 'ride found'
-                      : 'rides found'
+                      ? 'ride available'
+                      : 'rides available'
                   }`}
             </span>
 
@@ -277,7 +317,7 @@ export function RidesPage() {
           {isLoading && (
             <div className="ride-loading">
               <div className="loading-bar" />
-              <p>Finding available rides...</p>
+              <p>Finding available rides across the network...</p>
             </div>
           )}
 
@@ -285,13 +325,13 @@ export function RidesPage() {
             <div className="ride-error-state">
               <h2>Unable to load rides</h2>
               <p>
-                Something went wrong while loading the
+                Something went wrong while connecting to the
                 marketplace.
               </p>
 
               <Link to="/" className="empty-action">
-                Back to search
-                <span aria-hidden="true">→</span>
+                <ArrowLeft size={15} />
+                <span>Back to search</span>
               </Link>
             </div>
           )}
@@ -323,7 +363,7 @@ export function RidesPage() {
             rides.length > 0 && (
               <div className="travel-banner">
                 <div className="travel-banner-icon">
-                  <span>↗</span>
+                  <TrendingUp size={18} />
                 </div>
 
                 <div>
@@ -332,13 +372,12 @@ export function RidesPage() {
                   </strong>
 
                   <p>
-                    Save money, reduce emissions, and make
-                    new connections.
+                    Save travel costs, reduce carbon emissions, and meet verified co-travelers.
                   </p>
                 </div>
 
                 <span className="travel-banner-side">
-                  A greener, friendlier way to travel
+                  Safe, community-first mobility
                 </span>
               </div>
             )}
@@ -350,13 +389,13 @@ export function RidesPage() {
           <strong>
             RIDE<span>X</span>
           </strong>
-          <small>Move together</small>
+          <small>Move together across India</small>
         </div>
 
         <nav>
           <a href="#about">About</a>
           <a href="#safety">Safety</a>
-          <a href="#help">Help</a>
+          <a href="#help">Help Center</a>
           <a href="#terms">Terms</a>
           <a href="#privacy">Privacy</a>
         </nav>
